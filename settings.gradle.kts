@@ -14,5 +14,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "IMSDKProject"
-include(":app")
- 
+include(":DemoApp")
+include(":IMSDK")
+include(":IMSDK:NetCore")
+include(":IMSDK:NetHandler")
+include(":IMUI")
+include(":IMSDK:RTC")
