@@ -16,6 +16,12 @@ android {
                 cppFlags("-std=c++17")
             }
         }
+        ndk {
+            abiFilters.apply {
+                add("armeabi-v7a")
+                add("arm64-v8a")
+            }
+        }
     }
 
     buildTypes {
@@ -40,6 +46,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    ndkVersion = "23.2.8568313"
 }
 
 dependencies {
