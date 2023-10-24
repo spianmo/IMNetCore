@@ -31,11 +31,11 @@ add_library(ssl STATIC IMPORTED)
 add_library(crypto STATIC IMPORTED)
 
 set_target_properties(ssl PROPERTIES
-        IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/openssl-prefix/src/openssl/target/lib/libssl${CMAKE_STATIC_LIBRARY_SUFFIX}
+        IMPORTED_LOCATION ${OPENSSL_LIBRARY_SSL}
 )
 
 set_target_properties(crypto PROPERTIES
-        IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/openssl-prefix/src/openssl/target/lib/libcrypto${CMAKE_STATIC_LIBRARY_SUFFIX}
+        IMPORTED_LOCATION ${OPENSSL_LIBRARY_CRYPTO}
 )
 
 add_dependencies(ssl openssl_ext)

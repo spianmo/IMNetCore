@@ -13,6 +13,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
         externalNativeBuild {
             cmake {
+                arguments("-DANDROID_STL=c++_shared", "-DANDROID_TOOLCHAIN=clang")
                 cppFlags("-std=c++17")
             }
         }

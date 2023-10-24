@@ -30,7 +30,7 @@ set(libhv_ext_LIB "${INSTALL_DIR}/src/libhv_ext-build/lib")
 include_directories(${libhv_ext_INCLUDE})
 link_directories(${libhv_ext_LIB})
 
-add_library(libhv STATIC IMPORTED)
+add_library(libhv STATIC IMPORTED GLOBAL)
 
 set_target_properties(libhv PROPERTIES
         IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/libhv_ext-prefix/src/libhv_ext-build/lib/libhv_static${CMAKE_STATIC_LIBRARY_SUFFIX}
