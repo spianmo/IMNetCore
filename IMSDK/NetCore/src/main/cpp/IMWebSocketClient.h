@@ -5,7 +5,7 @@
 #ifndef IMSDKPROJECT_IMWEBSOCKETCLIENT_H
 #define IMSDKPROJECT_IMWEBSOCKETCLIENT_H
 
-#include "WebSocketClient.h"
+#include "hv/WebSocketClient.h"
 
 class IMWebSocketClient : public hv::WebSocketClient {
 public:
@@ -43,7 +43,7 @@ public:
 
 };
 
-typedef std::shared_ptr <IMWebSocketClient> MyWebSocketClientPtr;
+typedef std::shared_ptr<IMWebSocketClient> MyWebSocketClientPtr;
 
 
 #endif //IMSDKPROJECT_IMWEBSOCKETCLIENT_H
