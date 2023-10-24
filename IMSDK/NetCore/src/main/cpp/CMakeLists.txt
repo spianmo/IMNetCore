@@ -4,8 +4,8 @@ project("netcore")
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field -Wno-unused-const-variable -Wno-unused-lambda-capture -Wno-unused-local-typedefs -Wno-unused-const-variable -fexceptions -fpermissive -fPIC -Wl,-Bsymbolic -fvisibility=hidden -fvisibility-inlines-hidden -DFIXED_POINT -Wno-pedantic -Wdeprecated-declarations -O2")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field -Wno-unused-const-variable -Wno-unused-lambda-capture -Wno-unused-local-typedefs -Wno-unused-const-variable -fexceptions -fpermissive -fPIC -Wl,-Bsymbolic -fvisibility=hidden -fvisibility-inlines-hidden -DFIXED_POINT -Wno-pedantic -Wdeprecated-declarations -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -O2")
 
 include_directories(${CMAKE_SOURCE_DIR})
 

@@ -1,4 +1,4 @@
-option(WITH_OPENSSL "with openssl library" ON)
+option(WITH_OPENSSL "with openssl library" OFF)
 option(WITH_KCP "compile event/kcp" ON)
 
 
@@ -10,6 +10,8 @@ ExternalProject_Add(libhv_ext
         GIT_REPOSITORY https://github.com/ithewei/libhv.git
         INSTALL_COMMAND ""
         CMAKE_ARGS
+        -DCMAKE_TOOLCHAIN_FILE=${CMAKE_ANDROID_NDK}/build/cmake/android.toolchain.cmake
+        -DANDROID_ABI=${CMAKE_ANDROID_ARCH_ABI}
         -DBUILD_EXAMPLES=OFF
         -DWITH_OPENSSL=${WITH_OPENSSL}
         -DWITH_KCP=${WITH_KCP}
