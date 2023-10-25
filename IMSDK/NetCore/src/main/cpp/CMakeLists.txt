@@ -13,21 +13,16 @@ include_directories(${CMAKE_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH
         "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 
-find_package(OpenSSL REQUIRED)
-if (OpenSSL_FOUND)
-    message(==OpenSSL_FOUND)
-else ()
-    message(==OpenSSL_NOT_FOUND)
-endif ()
+find_package(libhv REQUIRED)
 
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
         netcore.cpp
-        #        IMWebSocketClient.h
+        IMWebSocketClient.h
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
-        #        libhv
+        libhv
         ssl
         crypto
         android
