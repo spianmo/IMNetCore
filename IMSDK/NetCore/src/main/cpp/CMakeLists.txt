@@ -13,17 +13,15 @@ include_directories(${CMAKE_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH
         "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 
-find_package(libhv REQUIRED)
+include(modules/libhv.cmake)
 
 
-add_library(${CMAKE_PROJECT_NAME} SHARED
+add_library(netcore SHARED
         netcore.cpp
         IMWebSocketClient.h
 )
 
-target_link_libraries(${CMAKE_PROJECT_NAME}
+target_link_libraries(netcore
         libhv
-        ssl
-        crypto
         android
         log)

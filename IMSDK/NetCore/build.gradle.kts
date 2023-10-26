@@ -16,6 +16,9 @@ android {
                 arguments("-DANDROID_STL=c++_shared", "-DANDROID_TOOLCHAIN=clang")
                 cppFlags("-std=c++17")
             }
+            ndkBuild {
+                arguments("-j8")
+            }
         }
         ndk {
             abiFilters.apply {

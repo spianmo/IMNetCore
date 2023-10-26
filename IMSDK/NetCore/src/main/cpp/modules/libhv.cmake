@@ -1,18 +1,13 @@
-option(WITH_OPENSSL "with openssl library" ON)
-option(WITH_KCP "compile event/kcp" ON)
+option(WITH_OPENSSL "with openssl library" OFF)
+option(WITH_KCP "compile event/kcp" OFF)
 
-include(ExternalProject)
-
-if (WITH_OPENSSL)
-    add_definitions(-DWITH_OPENSSL)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/modules/FindOpenSSL.cmake)
-endif ()
 
 # libhv
 set(LIBHV_VERSION master)
+include(ExternalProject)
 
 ExternalProject_Add(libhv_ext
-        GIT_REPOSITORY https://gitee.com/libhv/libhv.git
+        GIT_REPOSITORY https://gitee.com/spianmo/libhv.git
         INSTALL_COMMAND ""
         CMAKE_ARGS
         -DCMAKE_TOOLCHAIN_FILE=${CMAKE_ANDROID_NDK}/build/cmake/android.toolchain.cmake
@@ -26,8 +21,8 @@ ExternalProject_Add(libhv_ext
         BUILD_BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/libhv_ext-prefix/src/libhv_ext-build/lib/libhv_static${CMAKE_STATIC_LIBRARY_SUFFIX}
         UPDATE_COMMAND ""
         INSTALL_COMMAND ""
-        GIT_TAG ${LIBHV_VERSION}
-        DEPENDS OpenSSL)
+        GIT_TAG ${LIBHV_VERSION})
+
 
 ExternalProject_Get_property(libhv_ext INSTALL_DIR)
 
@@ -44,8 +39,3 @@ set_target_properties(libhv PROPERTIES
 )
 
 add_dependencies(libhv libhv_ext)
-
-set(LIBS ${LIBS} log)
-
-
-target_link_libraries(libhv INTERFACE ${LIBS})
