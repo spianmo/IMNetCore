@@ -1,4 +1,4 @@
-option(WITH_OPENSSL "with openssl library" OFF)
+option(WITH_OPENSSL "with openssl library" ON)
 option(WITH_KCP "compile event/kcp" OFF)
 
 
@@ -8,7 +8,6 @@ include(ExternalProject)
 
 ExternalProject_Add(libhv_ext
         GIT_REPOSITORY https://gitee.com/spianmo/libhv.git
-        INSTALL_COMMAND ""
         CMAKE_ARGS
         -DCMAKE_TOOLCHAIN_FILE=${CMAKE_ANDROID_NDK}/build/cmake/android.toolchain.cmake
         -DANDROID_ABI=${CMAKE_ANDROID_ARCH_ABI}
@@ -18,7 +17,11 @@ ExternalProject_Add(libhv_ext
         -DBUILD_STATIC=ON
         -DBUILD_SHARED=OFF
         -DCMAKE_BUILD_TYPE=Release
+        -DANDROID_NDK_ROOT=${CMAKE_ANDROID_NDK}
+        -DANDROID_PLATFORM=${ANDROID_PLATFORM}
         BUILD_BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/libhv_ext-prefix/src/libhv_ext-build/lib/libhv_static${CMAKE_STATIC_LIBRARY_SUFFIX}
+        BUILD_BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/libhv_ext-prefix/src/libhv_ext-build/lib/libcrypto${CMAKE_STATIC_LIBRARY_SUFFIX}
+        BUILD_BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/libhv_ext-prefix/src/libhv_ext-build/lib/libssl${CMAKE_STATIC_LIBRARY_SUFFIX}
         UPDATE_COMMAND ""
         INSTALL_COMMAND ""
         GIT_TAG ${LIBHV_VERSION})
@@ -38,4 +41,17 @@ set_target_properties(libhv PROPERTIES
         IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/libhv_ext-prefix/src/libhv_ext-build/lib/libhv_static${CMAKE_STATIC_LIBRARY_SUFFIX}
 )
 
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/libhv_ext-prefix/src/libhv_ext-build/include)
+
+add_library(crypto STATIC IMPORTED GLOBAL)
+
+set_target_properties(crypto PROPERTIES
+        IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/libhv_ext-prefix/src/libhv_ext-build/lib/libcrypto${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+
+add_library(ssl STATIC IMPORTED GLOBAL)
+
+set_target_properties(ssl PROPERTIES
+        IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/libhv_ext-prefix/src/libhv_ext-build/lib/libssl${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
 add_dependencies(libhv libhv_ext)
