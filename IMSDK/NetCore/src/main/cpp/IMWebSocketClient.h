@@ -59,7 +59,8 @@ public:
         // MAX_CONTENT_LENGTH = 8 * 1024
         jfieldID fieldID = env->GetStaticFieldID(clazz, "MAX_CONTENT_LENGTH", "I");
         jint max_content_length = env->GetStaticIntField(clazz, fieldID);
-        // setMaxContentLength(max_content_length);
+        channel->setMaxReadBufsize(max_content_length);
+        channel->setMaxWriteBufsize(max_content_length);
 
         // READER_IDLE_TIME_SECONDS = 5
         fieldID = env->GetStaticFieldID(clazz, "IDLE_PING_INTERVAL", "I");
