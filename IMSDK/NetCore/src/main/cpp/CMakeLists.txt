@@ -11,19 +11,26 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 # Add path for custom CMake modules.
 list(APPEND CMAKE_MODULE_PATH
-        "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-include(modules/libhv.cmake)
+include(cmake/libhv.cmake)
+include(cmake/libfmt.cmake)
 
 
 add_library(netcore SHARED
         netcore.cpp
         IMWebSocketClient.h
+        base/HttpHandlerRegistry.h
+        base/HttpHandlerRegistry.cpp
+        base/WebSocketHandler.cpp
+        base/WebSocketHandler.h
+        util.h
 )
 
 target_link_libraries(netcore
         crypto
         ssl
         libhv
+        fmt
         android
         log)
