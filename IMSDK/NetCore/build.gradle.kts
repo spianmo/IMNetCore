@@ -13,7 +13,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
         externalNativeBuild {
             cmake {
-                arguments("-DANDROID_STL=c++_shared", "-DANDROID_TOOLCHAIN=clang")
+                arguments("-DANDROID_TOOLCHAIN=clang")
                 cppFlags("-std=c++17")
             }
             ndkBuild {
@@ -22,7 +22,7 @@ android {
         }
         ndk {
             abiFilters.apply {
-//                add("armeabi-v7a")
+                add("armeabi-v7a")
                 add("arm64-v8a")
             }
         }

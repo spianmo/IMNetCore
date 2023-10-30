@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <string>
 #include "IMWebSocketClient.h"
+#include "openssl/opensslv.h"
 #include <iostream>
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -10,5 +11,5 @@ Java_com_teamhelper_imsdk_netcore_NativeLib_stringFromJNI(
     std::string hello = "Hello from C++";
     auto client = new IMWebSocketClient();
     client->connect("");
-    return env->NewStringUTF(hello.c_str());
+    return env->NewStringUTF(OPENSSL_VERSION_TEXT);
 }
