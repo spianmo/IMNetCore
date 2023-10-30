@@ -56,8 +56,14 @@ public:
             JNIEnv *env = getEnv();
             jclass clazz = findClass("com/teamhelper/imsdk/netcore/config/WebsocketConfig");
 
+            // MAX_CONTENT_LENGTH = 8 * 1024
+            jfieldID fieldID = env->GetStaticFieldID(clazz, "MAX_CONTENT_LENGTH", "I");
+            jint max_content_length = env->GetStaticIntField(clazz, fieldID);
+            unpack_setting->package_max_length = max_content_length;
+            channel->setUnpack(unpack_setting);
+
             // KEEPALIVE_TIMEOUT = -1
-            jfieldID fieldID = env->GetStaticFieldID(clazz, "KEEPALIVE_TIMEOUT", "I");
+            fieldID = env->GetStaticFieldID(clazz, "KEEPALIVE_TIMEOUT", "I");
             jint keepalive_timeout = env->GetStaticIntField(clazz, fieldID);
             channel->setKeepaliveTimeout(keepalive_timeout);
 
@@ -75,14 +81,8 @@ public:
         JNIEnv *env = getEnv();
         jclass clazz = findClass("com/teamhelper/imsdk/netcore/config/WebsocketConfig");
 
-        // MAX_CONTENT_LENGTH = 8 * 1024
-        jfieldID fieldID = env->GetStaticFieldID(clazz, "MAX_CONTENT_LENGTH", "I");
-        jint max_content_length = env->GetStaticIntField(clazz, fieldID);
-        unpack_setting->package_max_length = max_content_length;
-        setUnpack(unpack_setting);
-
         // READER_IDLE_TIME_SECONDS = 5
-        fieldID = env->GetStaticFieldID(clazz, "PING_INTERVAL", "I");
+        jfieldID fieldID = env->GetStaticFieldID(clazz, "PING_INTERVAL", "I");
         jint all_idle_time_seconds = env->GetStaticIntField(clazz, fieldID);
         setPingInterval(all_idle_time_seconds);
 
