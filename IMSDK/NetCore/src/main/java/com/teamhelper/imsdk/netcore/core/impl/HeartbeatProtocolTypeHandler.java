@@ -7,8 +7,8 @@ import com.teamhelper.imsdk.netcore.protocol.Protocol;
 
 /**
  * @Description:
- * @Author: ZhangLuo (Moss)
- * @Email: zhangluo.chn@gmail.com
+ * @Author: Finger
+ * @Email: Finger@spianmo.com
  * @Date: 2023/10/24
  */
 public class HeartbeatProtocolTypeHandler implements ProtocolTypeHandler<String> {

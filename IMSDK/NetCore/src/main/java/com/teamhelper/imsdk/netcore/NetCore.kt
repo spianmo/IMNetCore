@@ -20,6 +20,10 @@ class NetCore private constructor(private var netCoreLib: NetCoreLib) {
         netCoreLib.close()
     }
 
+    fun isConnected(): Boolean {
+        return netCoreLib.isConnected()
+    }
+
     companion object {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             NetCore(NetCoreLib())

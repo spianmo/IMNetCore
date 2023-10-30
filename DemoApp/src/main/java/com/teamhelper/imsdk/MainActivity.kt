@@ -1,6 +1,7 @@
 package com.teamhelper.imsdk
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener {
             NetCore.instance.connect()
+            Handler(mainLooper).postDelayed({
+                NetCore.instance.sendTextMessage("Hello World")
+            }, 5000)
+
         }
     }
 

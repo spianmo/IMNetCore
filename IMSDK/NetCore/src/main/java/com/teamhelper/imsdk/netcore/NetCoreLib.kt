@@ -14,6 +14,8 @@ class NetCoreLib {
     external fun close()
     external fun sendTextMessage(req: String)
     external fun sendBinaryMessage(req: ByteArray)
+    external fun isConnected(): Boolean
+    external fun isReconnect(): Boolean
 
 
     companion object {

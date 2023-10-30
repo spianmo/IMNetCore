@@ -4,8 +4,8 @@ import com.teamhelper.imsdk.netcore.constant.Platform
 
 /**
  * @Description: 协议
- * @Author: ZhangLuo (Moss)
- * @Email: zhangluo.chn@gmail.com
+ * @Author: Finger
+ * @Email: Finger@spianmo.com
  * @Date: 2023/10/23
  */
 class Protocol<T>(

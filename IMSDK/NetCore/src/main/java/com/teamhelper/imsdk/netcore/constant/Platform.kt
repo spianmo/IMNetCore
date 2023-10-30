@@ -2,8 +2,8 @@ package com.teamhelper.imsdk.netcore.constant
 
 /**
  * @Description: 客户端平台
- * @Author: ZhangLuo (Moss)
- * @Email: zhangluo.chn@gmail.com
+ * @Author: Finger
+ * @Email: Finger@spianmo.com
  * @Date: 2023/10/23
  */
 enum class Platform {

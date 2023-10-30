@@ -15,8 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Description:
- * @Author: ZhangLuo (Moss)
- * @Email: zhangluo.chn@gmail.com
+ * @Author: Finger
+ * @Email: Finger@spianmo.com
  * @Date: 2023/10/24
  */
 public class ServerGlobalContext {

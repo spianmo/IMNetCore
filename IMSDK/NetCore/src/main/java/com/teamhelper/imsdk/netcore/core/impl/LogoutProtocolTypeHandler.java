@@ -7,8 +7,8 @@ import com.teamhelper.imsdk.netcore.protocol.ProtocolType;
 
 /**
  * @Description: 登录消息处理器
- * @Author: ZhangLuo (Moss)
- * @Email: zhangluo.chn@gmail.com
+ * @Author: Finger
+ * @Email: Finger@spianmo.com
  * @Date: 2023/10/24
  */
 public class LogoutProtocolTypeHandler implements ProtocolTypeHandler<Void> {

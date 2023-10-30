@@ -26,6 +26,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_teamhelper_imsdk_netcore_NetCoreLib_connect(JNIEnv *env, jobject thiz, jstring ws_url) {
+    if (clientPtr != nullptr) {
+        LOGE("WebSocketClient is already initialized");
+        return;
+    }
     const char *url = env->GetStringUTFChars(ws_url, 0);
     clientPtr = new IMWebSocketClient();
     clientPtr->connect(url);
@@ -35,6 +39,14 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_teamhelper_imsdk_netcore_NetCoreLib_sendBinaryMessage(JNIEnv *env, jobject thiz,
                                                                jbyteArray req) {
+    if (clientPtr == nullptr) {
+        LOGE("WebSocketClient is not initialized, send binary message failed");
+        return;
+    }
+    if (!clientPtr->isConnected()) {
+        LOGE("WebSocketClient is not connected, send binary message failed");
+        return;
+    }
     jbyte *data = env->GetByteArrayElements(req, 0);
     jsize len = env->GetArrayLength(req);
     clientPtr->send((const char *) data, len);
@@ -44,6 +56,14 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_teamhelper_imsdk_netcore_NetCoreLib_sendTextMessage(JNIEnv *env, jobject thiz,
                                                              jstring req) {
+    if (clientPtr == nullptr) {
+        LOGE("WebSocketClient is not initialized, send text message failed");
+        return;
+    }
+    if (!clientPtr->isConnected()) {
+        LOGE("WebSocketClient is not connected, send text message failed");
+        return;
+    }
     const char *data = env->GetStringUTFChars(req, 0);
     clientPtr->send(data);
     env->ReleaseStringUTFChars(req, data);
@@ -51,5 +71,28 @@ Java_com_teamhelper_imsdk_netcore_NetCoreLib_sendTextMessage(JNIEnv *env, jobjec
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_teamhelper_imsdk_netcore_NetCoreLib_close(JNIEnv *env, jobject thiz) {
+    if (clientPtr == nullptr) {
+        LOGE("WebSocketClient is not initialized, close failed");
+        return;
+    }
     clientPtr->close();
+    clientPtr = nullptr;
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_teamhelper_imsdk_netcore_NetCoreLib_isConnected(JNIEnv *env, jobject thiz) {
+    if (clientPtr == nullptr) {
+        LOGE("WebSocketClient is not initialized, can not get connect status");
+        return FALSE;
+    }
+    return clientPtr->isConnected();
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_teamhelper_imsdk_netcore_NetCoreLib_isReconnect(JNIEnv *env, jobject thiz) {
+    if (clientPtr == nullptr) {
+        LOGE("WebSocketClient is not initialized, can not get reconnect status");
+        return FALSE;
+    }
+    return clientPtr->isReconnect();
 }

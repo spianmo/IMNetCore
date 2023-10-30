@@ -52,18 +52,37 @@ public:
             env->CallStaticVoidMethod(clazz, methodID);
             LOGE("onClose\n");
         };
+        onConnection = [this](const TSocketChannelPtr&) {
+            JNIEnv *env = getEnv();
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/config/WebsocketConfig");
+
+            // KEEPALIVE_TIMEOUT = -1
+            jfieldID fieldID = env->GetStaticFieldID(clazz, "KEEPALIVE_TIMEOUT", "I");
+            jint keepalive_timeout = env->GetStaticIntField(clazz, fieldID);
+            channel->setKeepaliveTimeout(keepalive_timeout);
+
+            // READ_TIMEOUT = 5 * 1000
+            fieldID = env->GetStaticFieldID(clazz, "READ_TIMEOUT", "I");
+            jint read_timeout = env->GetStaticIntField(clazz, fieldID);
+            channel->setReadTimeout(read_timeout);
+
+            // WRITE_TIMEOUT = 5 * 1000
+            fieldID = env->GetStaticFieldID(clazz, "WRITE_TIMEOUT", "I");
+            jint write_timeout = env->GetStaticIntField(clazz, fieldID);
+            channel->setWriteTimeout(write_timeout);
+        };
 
         JNIEnv *env = getEnv();
-
         jclass clazz = findClass("com/teamhelper/imsdk/netcore/config/WebsocketConfig");
+
         // MAX_CONTENT_LENGTH = 8 * 1024
         jfieldID fieldID = env->GetStaticFieldID(clazz, "MAX_CONTENT_LENGTH", "I");
         jint max_content_length = env->GetStaticIntField(clazz, fieldID);
-        channel->setMaxReadBufsize(max_content_length);
-        channel->setMaxWriteBufsize(max_content_length);
+        unpack_setting->package_max_length = max_content_length;
+        setUnpack(unpack_setting);
 
         // READER_IDLE_TIME_SECONDS = 5
-        fieldID = env->GetStaticFieldID(clazz, "IDLE_PING_INTERVAL", "I");
+        fieldID = env->GetStaticFieldID(clazz, "PING_INTERVAL", "I");
         jint all_idle_time_seconds = env->GetStaticIntField(clazz, fieldID);
         setPingInterval(all_idle_time_seconds);
 
@@ -72,12 +91,12 @@ public:
         jint connect_timeout = env->GetStaticIntField(clazz, fieldID);
         setConnectTimeout(connect_timeout);
 
-        reconn_setting_t reconn;
-        reconn_setting_init(&reconn);
-        reconn.min_delay = 1000;
-        reconn.max_delay = 10000;
-        reconn.delay_policy = 0;
-        setReconnect(&reconn);
+        reconn_setting_t reconnSetting;
+        reconn_setting_init(&reconnSetting);
+        reconnSetting.min_delay = 1000;
+        reconnSetting.max_delay = 10000;
+        reconnSetting.delay_policy = 0;
+        setReconnect(&reconnSetting);
 
         http_headers headers;
         return open(url, headers);
