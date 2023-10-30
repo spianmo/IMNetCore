@@ -9,6 +9,7 @@
 IMWebSocketClient *clientPtr = nullptr;
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
+    LOGE("JNI load");
     jvm = vm;
 
     JNIEnv *env;
