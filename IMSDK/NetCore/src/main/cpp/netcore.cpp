@@ -3,29 +3,23 @@
 #include "base/HttpHandlerRegistry.h"
 #include "base/WebSocketHandler.h"
 #include "IMWebSocketClient.h"
-#include "openssl/opensslv.h"
 #include <iostream>
 
 IMWebSocketClient *clientPtr = nullptr;
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
-    LOGE("JNI load");
-    jvm = vm;
-
-    JNIEnv *env;
-    if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
-        LOGE("JNI load GetEnv failed");
-        return -1;
-    }
+    gJvm = vm;  // cache the JavaVM pointer
+    auto env = getEnv();
+    //replace with one of your classes in the line below
+    auto randomClass = env->FindClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+    jclass classClass = env->GetObjectClass(randomClass);
+    auto classLoaderClass = env->FindClass("java/lang/ClassLoader");
+    auto getClassLoaderMethod = env->GetMethodID(classClass, "getClassLoader",
+                                                 "()Ljava/lang/ClassLoader;");
+    gClassLoader = env->NewGlobalRef(env->CallObjectMethod(randomClass, getClassLoaderMethod));
+    gFindClassMethod = env->GetMethodID(classLoaderClass, "findClass",
+                                        "(Ljava/lang/String;)Ljava/lang/Class;");
     return JNI_VERSION_1_6;
-}
-
-void JNI_OnUnload(JavaVM *vm, void *reserved) {
-    LOGE("JNI unload");
-
-    JNIEnv *env;
-    if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK)
-        LOGE("JNI load GetEnv failed");
 }
 
 
@@ -53,4 +47,9 @@ Java_com_teamhelper_imsdk_netcore_NetCoreLib_sendTextMessage(JNIEnv *env, jobjec
     const char *data = env->GetStringUTFChars(req, 0);
     clientPtr->send(data);
     env->ReleaseStringUTFChars(req, data);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_teamhelper_imsdk_netcore_NetCoreLib_close(JNIEnv *env, jobject thiz) {
+    clientPtr->close();
 }

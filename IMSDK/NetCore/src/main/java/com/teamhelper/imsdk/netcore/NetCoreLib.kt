@@ -11,7 +11,7 @@ import com.teamhelper.imsdk.netcore.protocol.Protocol
 @Keep
 class NetCoreLib {
     external fun connect(wsUrl: String)
-
+    external fun close()
     external fun sendTextMessage(req: String)
     external fun sendBinaryMessage(req: ByteArray)
 
@@ -22,7 +22,7 @@ class NetCoreLib {
         }
 
         @JvmStatic
-        private val TAG = Companion::class.java.simpleName
+        private val TAG = NetCoreLib::class.java.simpleName
 
         @JvmStatic
         fun onConnectOpen(response: String) {

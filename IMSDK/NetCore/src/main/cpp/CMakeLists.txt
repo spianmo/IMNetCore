@@ -4,8 +4,8 @@ project("netcore")
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -O2 --coverage")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -O2 --coverage")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -O2 --coverage -fvisibility=hidden")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -O2 --coverage -fvisibility=hidden")
 
 include_directories(${CMAKE_SOURCE_DIR})
 

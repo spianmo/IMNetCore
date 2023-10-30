@@ -8,25 +8,26 @@
 #include <android/log.h>
 #include "util.h"
 
-JavaVM *jvm = NULL;
+JavaVM* gJvm = nullptr;
+static jobject gClassLoader;
+static jmethodID gFindClassMethod;
 
-
-bool get_jni_env(JNIEnv **env) {
-    bool did_attach_thread = false;
-    *env = NULL;
-    // Check if the current thread is attached to the VM
-    auto get_env_result = jvm->GetEnv((void **) env, JNI_VERSION_1_6);
-    if (get_env_result == JNI_EDETACHED) {
-        if (jvm->AttachCurrentThread(env, NULL) == JNI_OK) {
-            did_attach_thread = true;
+JNIEnv* getEnv() {
+    JNIEnv *env;
+    int status = gJvm->GetEnv((void**)&env, JNI_VERSION_1_6);
+    if(status < 0) {
+        status = gJvm->AttachCurrentThread(&env, NULL);
+        if(status < 0) {
+            return nullptr;
         }
-    } else if (get_env_result == JNI_EVERSION) {
-        // Unsupported JNI version. Throw an exception if you want to.
     }
-    return did_attach_thread;
+    return env;
 }
 
-#define LOG_TAG  "=======WebSocket========>"
+jclass findClass(const char* name) {
+    return static_cast<jclass>(getEnv()->CallObjectMethod(gClassLoader, gFindClassMethod, getEnv()->NewStringUTF(name)));
+}
+#define LOG_TAG  "WebSocketClient JNI"
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG ,__VA_ARGS__)
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG ,__VA_ARGS__)
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN,LOG_TAG ,__VA_ARGS__)

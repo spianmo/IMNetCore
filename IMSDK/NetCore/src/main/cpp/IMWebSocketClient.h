@@ -17,20 +17,18 @@ public:
 
     int connect(const char *url) {
         onopen = [this]() {
-            JNIEnv *env;
-            get_jni_env(&env);
+            JNIEnv *env = getEnv();
             const HttpResponsePtr &resp = getHttpResponse();
-            jclass clazz = env->FindClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCoreLib");
             jmethodID methodID = env->GetStaticMethodID(clazz, "onConnectOpen",
                                                         "(Ljava/lang/String;)V");
             env->CallStaticVoidMethod(clazz, methodID, env->NewStringUTF(resp->body.c_str()));
             LOGE("onOpen\n%s\n", resp->body.c_str());
         };
         onmessage = [this](const std::string &msg) {
-            JNIEnv *env;
-            get_jni_env(&env);
+            JNIEnv *env = getEnv();
             auto ws_opcode = opcode();
-            jclass clazz = env->FindClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCoreLib");
             if (ws_opcode == WS_OPCODE_TEXT) {
                 jmethodID methodID = env->GetStaticMethodID(clazz, "onTextMessageRecv",
                                                             "(Ljava/lang/String;)V");
@@ -47,19 +45,17 @@ public:
                  (int) msg.size(), (int) msg.size(), msg.data());
         };
         onclose = []() {
-            JNIEnv *env;
-            get_jni_env(&env);
-            jclass clazz = env->FindClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+            JNIEnv *env = getEnv();
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCoreLib");
             jmethodID methodID = env->GetStaticMethodID(clazz, "onConnectClosed",
                                                         "()V");
             env->CallStaticVoidMethod(clazz, methodID);
             LOGE("onClose\n");
         };
 
-        JNIEnv *env;
-        get_jni_env(&env);
+        JNIEnv *env = getEnv();
 
-        jclass clazz = env->FindClass("com/teamhelper/imsdk/netcore/config/WebsocketConfig");
+        jclass clazz = findClass("com/teamhelper/imsdk/netcore/config/WebsocketConfig");
         // MAX_CONTENT_LENGTH = 8 * 1024
         jfieldID fieldID = env->GetStaticFieldID(clazz, "MAX_CONTENT_LENGTH", "I");
         jint max_content_length = env->GetStaticIntField(clazz, fieldID);
@@ -79,7 +75,7 @@ public:
         reconn_setting_init(&reconn);
         reconn.min_delay = 1000;
         reconn.max_delay = 10000;
-        reconn.delay_policy = 1;
+        reconn.delay_policy = 0;
         setReconnect(&reconn);
 
         http_headers headers;
