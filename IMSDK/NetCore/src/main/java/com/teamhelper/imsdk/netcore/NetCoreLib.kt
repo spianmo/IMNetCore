@@ -59,5 +59,10 @@ class NetCoreLib {
         fun onConnectClosed() {
             Log.e(TAG, "onConnectClosed")
         }
+
+        @JvmStatic
+        fun onReconnect(retryCnt: Int, delay: Int) {
+            Log.e(TAG, "onReconnect retryCnt: $retryCnt, delay: $delay")
+        }
     }
 }

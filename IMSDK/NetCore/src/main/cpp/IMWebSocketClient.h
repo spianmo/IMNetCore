@@ -52,7 +52,7 @@ public:
             env->CallStaticVoidMethod(clazz, methodID);
             LOGE("onClose\n");
         };
-        onConnection = [this](const TSocketChannelPtr&) {
+        onConnection = [this](const TSocketChannelPtr &) {
             JNIEnv *env = getEnv();
             jclass clazz = findClass("com/teamhelper/imsdk/netcore/config/WebsocketConfig");
 
@@ -76,6 +76,14 @@ public:
             fieldID = env->GetStaticFieldID(clazz, "WRITE_TIMEOUT", "I");
             jint write_timeout = env->GetStaticIntField(clazz, fieldID);
             channel->setWriteTimeout(write_timeout);
+        };
+        onReconnect = [this](uint32_t cur_retry_cnt, uint32_t cur_delay) {
+            JNIEnv *env = getEnv();
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+            jmethodID methodID = env->GetStaticMethodID(clazz, "onReconnect",
+                                                        "(II)V");
+            env->CallStaticVoidMethod(clazz, methodID, cur_retry_cnt, cur_delay);
+            LOGE("onReconnect\n");
         };
 
         JNIEnv *env = getEnv();
