@@ -14,13 +14,13 @@ import java.lang.reflect.Type
  * @Email: Finger@spianmo.com
  * @Date: 2023/10/24
  */
-class CommonProtocolHandler : ProtocolHandler<CommonDataContent<*>> {
+class CommonProtocolHandler : ProtocolHandler<CommonDataContent<Any>> {
     /**
      * 消息处理器
      *
      * @param p 消息体
      */
-    override fun handle(p: Protocol<CommonDataContent<*>>) {
+    override fun handle(p: Protocol<CommonDataContent<Any>>) {
         executeEventHandler { serverEventListener: ServerEventListener ->
             serverEventListener.onCommonDataReceived(
                 p
@@ -29,6 +29,6 @@ class CommonProtocolHandler : ProtocolHandler<CommonDataContent<*>> {
     }
 
     override fun getGenericType(): Type {
-        return object : TypeToken<Protocol<CommonDataContent<*>>>() {}.type
+        return object : TypeToken<Protocol<CommonDataContent<Any>>>() {}.type
     }
 }

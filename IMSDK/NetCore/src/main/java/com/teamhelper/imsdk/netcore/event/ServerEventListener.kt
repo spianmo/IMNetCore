@@ -1,6 +1,7 @@
 package com.teamhelper.imsdk.netcore.event
 
 import com.teamhelper.imsdk.netcore.data.AckDataContent
+import com.teamhelper.imsdk.netcore.data.CommonDataContent
 import com.teamhelper.imsdk.netcore.data.ErrorDataContent
 import com.teamhelper.imsdk.netcore.data.KickOutDataContent
 import com.teamhelper.imsdk.netcore.data.LoginResultDataContent
@@ -17,7 +18,7 @@ interface ServerEventListener {
     fun onUserLogin(p: Protocol<LoginResultDataContent>)
     fun onUserKickOut(p: Protocol<KickOutDataContent>)
     fun onCommonDataReceived(p: ByteArray)
-    fun <T> onCommonDataReceived(p: Protocol<T>)
+    fun <T> onCommonDataReceived(p: Protocol<CommonDataContent<T>>)
     fun onHeartbeat(p: Protocol<String>)
     fun onErrorReceived(p: Protocol<ErrorDataContent>)
     fun onAckReceived(p: Protocol<AckDataContent>)

@@ -8,6 +8,7 @@ import com.teamhelper.imsdk.databinding.ActivityMainBinding
 import com.teamhelper.imsdk.netcore.NetCore
 import com.teamhelper.imsdk.netcore.NetEventRegistry
 import com.teamhelper.imsdk.netcore.data.AckDataContent
+import com.teamhelper.imsdk.netcore.data.CommonDataContent
 import com.teamhelper.imsdk.netcore.data.ErrorDataContent
 import com.teamhelper.imsdk.netcore.data.KickOutDataContent
 import com.teamhelper.imsdk.netcore.data.LoginResultDataContent
@@ -48,9 +49,10 @@ class MainActivity : AppCompatActivity(), ServerEventListener {
         Log.e("MainActivity", "onCommonDataReceived")
     }
 
-    override fun <T> onCommonDataReceived(p: Protocol<T>) {
+    override fun <T> onCommonDataReceived(p: Protocol<CommonDataContent<T>>) {
         Log.e("MainActivity", "onCommonDataReceived")
     }
+
 
     override fun onHeartbeat(p: Protocol<String>) {
         Log.e("MainActivity", "onHeartbeat")
