@@ -2,10 +2,8 @@ package com.teamhelper.imsdk.netcore
 
 import android.util.Log
 import androidx.annotation.Keep
-import com.teamhelper.imsdk.netcore.constant.BreakReason
-import com.teamhelper.imsdk.netcore.constant.Platform
-import com.teamhelper.imsdk.netcore.core.ServerGlobalContext
-import com.teamhelper.imsdk.netcore.event.ServerEventListener
+import com.google.gson.Gson
+import com.teamhelper.imsdk.netcore.handler.ProtocolHandler
 import com.teamhelper.imsdk.netcore.protocol.Protocol
 
 @Keep
@@ -34,6 +32,22 @@ class NetCoreLib {
         @JvmStatic
         fun onTextMessageRecv(message: String) {
             Log.e(TAG, "onTextMessageRecv: $message")
+
+            val anyProtocol = Gson().fromJson(message, Protocol::class.java)
+            if (anyProtocol.type == null) {
+                Log.e(TAG, "onTextMessageRecv: Irregular protocol format, type == null")
+                return
+            }
+            val protocolHandler: ProtocolHandler<Any>? =
+                NetEventRegistry.getProtocolHandler(anyProtocol.type) as ProtocolHandler<Any>?
+
+            if (protocolHandler == null) {
+                Log.e(TAG, "onTextMessageRecv: unknown protocol")
+                return
+            }
+
+            val fromJson = Gson().fromJson<Protocol<*>>(message, protocolHandler.getGenericType())
+            protocolHandler.handle(fromJson as Protocol<Any>)
         }
 
         @JvmStatic
@@ -45,59 +59,5 @@ class NetCoreLib {
         fun onConnectClosed() {
             Log.e(TAG, "onConnectClosed")
         }
-    }
-
-    init {
-        ServerGlobalContext.setServerEventListener(object : ServerEventListener {
-            override fun onUserLoginEvent(
-                uid: String?,
-                platform: Platform?,
-                token: String?,
-                extendData: String?
-            ) {
-                Log.e(TAG, "onUserLoginEvent: $uid")
-            }
-
-            override fun onUserOnlineEvent(uid: String?, platform: Platform?, extendData: String?) {
-                Log.e(TAG, "onUserOnlineEvent: $uid")
-            }
-
-            override fun onUserOfflineEvent(
-                uid: String?,
-                platform: Platform?,
-                reason: BreakReason?
-            ) {
-                Log.e(TAG, "onUserOfflineEvent: $uid")
-            }
-
-            override fun <T : Any?> onMessageReceivedEvent(p: Protocol<T>?) {
-                Log.e(TAG, "onMessageReceivedEvent: ${p?.dataContent}")
-            }
-
-            override fun onMessageHandleSuccessEvent(p: Protocol<*>?) {
-                Log.e(TAG, "onMessageHandleSuccessEvent: ${p?.dataContent}")
-            }
-
-            override fun onMessageHandleFailedEvent(p: Protocol<*>?) {
-                Log.e(TAG, "onMessageHandleFailedEvent: ${p?.dataContent}")
-            }
-
-            override fun onHeartbeatEvent(p: Protocol<*>?) {
-                Log.e(TAG, "onHeartbeatEvent: ${p?.dataContent}")
-            }
-
-            override fun onSessionReadTimeOut() {
-                Log.e(TAG, "onSessionReadTimeOut")
-            }
-
-            override fun onSessionWriterTimeOut() {
-                Log.e(TAG, "onSessionWriterTimeOut")
-            }
-
-            override fun onHeartbeatTimeOut() {
-                Log.e(TAG, "onHeartbeatTimeOut")
-            }
-
-        })
     }
 }

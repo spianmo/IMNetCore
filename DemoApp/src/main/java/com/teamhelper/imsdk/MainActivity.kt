@@ -2,13 +2,19 @@ package com.teamhelper.imsdk
 
 import android.os.Bundle
 import android.os.Handler
-import android.view.Menu
-import android.view.MenuItem
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.teamhelper.imsdk.databinding.ActivityMainBinding
 import com.teamhelper.imsdk.netcore.NetCore
+import com.teamhelper.imsdk.netcore.NetEventRegistry
+import com.teamhelper.imsdk.netcore.data.AckDataContent
+import com.teamhelper.imsdk.netcore.data.ErrorDataContent
+import com.teamhelper.imsdk.netcore.data.KickOutDataContent
+import com.teamhelper.imsdk.netcore.data.LoginResultDataContent
+import com.teamhelper.imsdk.netcore.event.ServerEventListener
+import com.teamhelper.imsdk.netcore.protocol.Protocol
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ServerEventListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -25,23 +31,36 @@ class MainActivity : AppCompatActivity() {
             Handler(mainLooper).postDelayed({
                 NetCore.instance.sendTextMessage("Hello World")
             }, 5000)
-
         }
+
+        NetEventRegistry.addServerEventListener(this)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+    override fun onUserLogin(p: Protocol<LoginResultDataContent>) {
+        Log.e("MainActivity", "onUserLoginEvent")
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+    override fun onUserKickOut(p: Protocol<KickOutDataContent>) {
+        Log.e("MainActivity", "onUserKickOutEvent" + p.dataContent?.reason)
+    }
+
+    override fun onCommonDataReceived(p: ByteArray) {
+        Log.e("MainActivity", "onCommonDataReceived")
+    }
+
+    override fun <T> onCommonDataReceived(p: Protocol<T>) {
+        Log.e("MainActivity", "onCommonDataReceived")
+    }
+
+    override fun onHeartbeat(p: Protocol<String>) {
+        Log.e("MainActivity", "onHeartbeat")
+    }
+
+    override fun onErrorReceived(p: Protocol<ErrorDataContent>) {
+        Log.e("MainActivity", "onErrorReceived")
+    }
+
+    override fun onAckReceived(p: Protocol<AckDataContent>) {
+        Log.e("MainActivity", "onAckReceived")
     }
 }

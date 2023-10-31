@@ -62,6 +62,11 @@ interface ProtocolType {
              * 服务端发出的踢客户端下线协议类型
              */
             const val KICK_OUT = 54
+
+            /**
+             * 通用数据协议类型
+             */
+            const val COMMON_DATA = 55
         }
     }
 }
