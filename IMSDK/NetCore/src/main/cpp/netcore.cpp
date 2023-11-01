@@ -11,7 +11,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     gJvm = vm;  // cache the JavaVM pointer
     auto env = getEnv();
     //replace with one of your classes in the line below
-    auto randomClass = env->FindClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+    auto randomClass = env->FindClass("com/teamhelper/imsdk/netcore/internal/NetCoreLib");
     jclass classClass = env->GetObjectClass(randomClass);
     auto classLoaderClass = env->FindClass("java/lang/ClassLoader");
     auto getClassLoaderMethod = env->GetMethodID(classClass, "getClassLoader",
@@ -25,7 +25,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_teamhelper_imsdk_netcore_NetCoreLib_connect(JNIEnv *env, jobject thiz, jstring ws_url) {
+Java_com_teamhelper_imsdk_netcore_internal_NetCoreLib_connect(JNIEnv *env, jobject thiz,
+                                                              jstring ws_url) {
     if (clientPtr != nullptr) {
         LOGE("WebSocketClient is already initialized");
         return;
@@ -37,8 +38,8 @@ Java_com_teamhelper_imsdk_netcore_NetCoreLib_connect(JNIEnv *env, jobject thiz, 
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_teamhelper_imsdk_netcore_NetCoreLib_sendBinaryMessage(JNIEnv *env, jobject thiz,
-                                                               jbyteArray req) {
+Java_com_teamhelper_imsdk_netcore_internal_NetCoreLib_sendBinaryMessage(JNIEnv *env, jobject thiz,
+                                                                        jbyteArray req) {
     if (clientPtr == nullptr) {
         LOGE("WebSocketClient is not initialized, send binary message failed");
         return;
@@ -54,8 +55,8 @@ Java_com_teamhelper_imsdk_netcore_NetCoreLib_sendBinaryMessage(JNIEnv *env, jobj
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_teamhelper_imsdk_netcore_NetCoreLib_sendTextMessage(JNIEnv *env, jobject thiz,
-                                                             jstring req) {
+Java_com_teamhelper_imsdk_netcore_internal_NetCoreLib_sendTextMessage(JNIEnv *env, jobject thiz,
+                                                                      jstring req) {
     if (clientPtr == nullptr) {
         LOGE("WebSocketClient is not initialized, send text message failed");
         return;
@@ -70,7 +71,7 @@ Java_com_teamhelper_imsdk_netcore_NetCoreLib_sendTextMessage(JNIEnv *env, jobjec
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_teamhelper_imsdk_netcore_NetCoreLib_close(JNIEnv *env, jobject thiz) {
+Java_com_teamhelper_imsdk_netcore_internal_NetCoreLib_close(JNIEnv *env, jobject thiz) {
     if (clientPtr == nullptr) {
         LOGE("WebSocketClient is not initialized, close failed");
         return;
@@ -80,7 +81,7 @@ Java_com_teamhelper_imsdk_netcore_NetCoreLib_close(JNIEnv *env, jobject thiz) {
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_teamhelper_imsdk_netcore_NetCoreLib_isConnected(JNIEnv *env, jobject thiz) {
+Java_com_teamhelper_imsdk_netcore_internal_NetCoreLib_isConnected(JNIEnv *env, jobject thiz) {
     if (clientPtr == nullptr) {
         LOGE("WebSocketClient is not initialized, can not get connect status");
         return FALSE;
@@ -89,7 +90,7 @@ Java_com_teamhelper_imsdk_netcore_NetCoreLib_isConnected(JNIEnv *env, jobject th
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_teamhelper_imsdk_netcore_NetCoreLib_isReconnect(JNIEnv *env, jobject thiz) {
+Java_com_teamhelper_imsdk_netcore_internal_NetCoreLib_isReconnect(JNIEnv *env, jobject thiz) {
     if (clientPtr == nullptr) {
         LOGE("WebSocketClient is not initialized, can not get reconnect status");
         return FALSE;

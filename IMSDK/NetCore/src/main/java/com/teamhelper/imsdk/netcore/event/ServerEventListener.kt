@@ -1,59 +1,45 @@
 package com.teamhelper.imsdk.netcore.event
 
-import com.teamhelper.imsdk.netcore.data.AckDataContent
-import com.teamhelper.imsdk.netcore.data.CommonDataContent
-import com.teamhelper.imsdk.netcore.data.ErrorDataContent
-import com.teamhelper.imsdk.netcore.data.KickOutDataContent
-import com.teamhelper.imsdk.netcore.data.LoginResultDataContent
-import com.teamhelper.imsdk.netcore.protocol.Protocol
-
 /**
- * @Description: 信道业务侧Protocol事件监听器
+ * @Description: 信道监听器
  * @Author: Finger
  * @Email: Finger@spianmo.com
  * @Date: 2023/10/23
  */
 interface ServerEventListener {
     /**
-     * 用户登录事件
-     * @param p: Protocol<LoginResultDataContent>
+     * 连接打开回调
+     * @param response: String
      */
-    fun onUserLogin(p: Protocol<LoginResultDataContent>)
+    fun onConnectOpen(response: String)
 
     /**
-     * 用户被踢出事件
-     * @param p: Protocol<KickOutDataContent>
+     * opCode Text消息接收回调
+     * @param message: String
      */
-    fun onUserKickOut(p: Protocol<KickOutDataContent>)
+
+    fun onTextMessageRecv(message: String)
 
     /**
-     * 通用数据接收事件
-     * @param p: ByteArray
+     * opCode Binary消息接收回调
+     * @param binary: ByteArray
      */
-    fun onCommonDataReceived(p: ByteArray)
+
+    fun onBinaryMessageRecv(binary: ByteArray)
 
     /**
-     * 通用数据接收事件
-     * @param p: Protocol<CommonDataContent<T>>
+     * 连接关闭回调
      */
-    fun <T> onCommonDataReceived(p: Protocol<CommonDataContent<T>>)
+
+    fun onConnectClosed()
 
     /**
-     * 心跳事件
-     * @param p: Protocol<String>
+     * 重连回调
+     * @calledByC++
+     * @param retryCnt: Int 重连次数 从1开始
+     * @param delay: Int 重连延迟时间 单位ms
      */
-    fun onHeartbeat(p: Protocol<String>)
 
-    /**
-     * 错误事件
-     * @param p: Protocol<ErrorDataContent>
-     */
-    fun onErrorReceived(p: Protocol<ErrorDataContent>)
-
-    /**
-     * ACK事件
-     * @param p: Protocol<AckDataContent>
-     */
-    fun onAckReceived(p: Protocol<AckDataContent>)
+    fun onReconnect(retryCnt: Int, delay: Int)
 
 }

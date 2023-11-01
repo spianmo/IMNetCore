@@ -1,18 +1,16 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
 }
 
 android {
-    namespace = "com.teamhelper.imsdk"
+    namespace = "com.teamhelper.imsdk.nethandler"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.teamhelper.imsdk"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -31,10 +29,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        viewBinding = true
-        dataBinding = true
-    }
 }
 
 dependencies {
@@ -42,9 +36,6 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
-    implementation(project(":IMSDK"))
-    implementation(project(":IMUI"))
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation("com.google.code.gson:gson:2.10.1")
 }

@@ -19,7 +19,7 @@ public:
         onopen = [this]() {
             JNIEnv *env = getEnv();
             const HttpResponsePtr &resp = getHttpResponse();
-            jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/internal/NetCoreLib");
             jmethodID methodID = env->GetStaticMethodID(clazz, "onConnectOpen",
                                                         "(Ljava/lang/String;)V");
             env->CallStaticVoidMethod(clazz, methodID, env->NewStringUTF(resp->body.c_str()));
@@ -28,7 +28,7 @@ public:
         onmessage = [this](const std::string &msg) {
             JNIEnv *env = getEnv();
             auto ws_opcode = opcode();
-            jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/internal/NetCoreLib");
             if (ws_opcode == WS_OPCODE_TEXT) {
                 jmethodID methodID = env->GetStaticMethodID(clazz, "onTextMessageRecv",
                                                             "(Ljava/lang/String;)V");
@@ -46,7 +46,7 @@ public:
         };
         onclose = []() {
             JNIEnv *env = getEnv();
-            jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/internal/NetCoreLib");
             jmethodID methodID = env->GetStaticMethodID(clazz, "onConnectClosed",
                                                         "()V");
             env->CallStaticVoidMethod(clazz, methodID);
@@ -79,7 +79,7 @@ public:
         };
         onReconnect = [this](uint32_t cur_retry_cnt, uint32_t cur_delay) {
             JNIEnv *env = getEnv();
-            jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCoreLib");
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/internal/NetCoreLib");
             jmethodID methodID = env->GetStaticMethodID(clazz, "onReconnect",
                                                         "(II)V");
             env->CallStaticVoidMethod(clazz, methodID, cur_retry_cnt, cur_delay);

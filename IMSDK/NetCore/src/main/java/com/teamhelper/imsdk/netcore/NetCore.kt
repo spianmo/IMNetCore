@@ -1,6 +1,7 @@
 package com.teamhelper.imsdk.netcore
 
 import androidx.annotation.Keep
+import com.teamhelper.imsdk.netcore.internal.NetCoreLib
 
 @Keep
 class NetCore private constructor(private var netCoreLib: NetCoreLib) {
