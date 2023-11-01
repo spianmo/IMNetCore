@@ -2,6 +2,8 @@ package com.teamhelper.imsdk.handler.impl
 
 import com.google.gson.reflect.TypeToken
 import com.teamhelper.imsdk.BusinessEventRegistry
+import com.teamhelper.imsdk.base.BusinessEventType
+import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.event.BusinessEventListener
 import com.teamhelper.imsdk.handler.ProtocolHandler
 import com.teamhelper.imsdk.protocol.Protocol
@@ -20,6 +22,7 @@ class HeartbeatProtocolHandler : ProtocolHandler<String> {
      * @param p 消息体
      */
     override fun handle(p: Protocol<String>) {
+        EventRegistry.post(BusinessEventType.onHeartbeat, p)
         BusinessEventRegistry.executeEventHandler { businessEventListener: BusinessEventListener ->
             businessEventListener.onHeartbeat(
                 p

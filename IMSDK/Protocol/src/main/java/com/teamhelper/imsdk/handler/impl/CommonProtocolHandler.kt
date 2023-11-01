@@ -2,6 +2,8 @@ package com.teamhelper.imsdk.handler.impl
 
 import com.google.gson.reflect.TypeToken
 import com.teamhelper.imsdk.BusinessEventRegistry
+import com.teamhelper.imsdk.base.BusinessEventType
+import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.data.CommonDataContent
 import com.teamhelper.imsdk.event.BusinessEventListener
 import com.teamhelper.imsdk.handler.ProtocolHandler
@@ -21,6 +23,7 @@ class CommonProtocolHandler : ProtocolHandler<CommonDataContent<Any>> {
      * @param p 消息体
      */
     override fun handle(p: Protocol<CommonDataContent<Any>>) {
+        EventRegistry.post(BusinessEventType.onCommonDataReceived, p)
         BusinessEventRegistry.executeEventHandler { businessEventListener: BusinessEventListener ->
             businessEventListener.onCommonDataReceived(
                 p

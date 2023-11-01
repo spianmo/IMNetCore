@@ -2,6 +2,8 @@ package com.teamhelper.imsdk.handler.impl
 
 import com.google.gson.reflect.TypeToken
 import com.teamhelper.imsdk.BusinessEventRegistry
+import com.teamhelper.imsdk.base.BusinessEventType
+import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.data.KickOutDataContent
 import com.teamhelper.imsdk.event.BusinessEventListener
 import com.teamhelper.imsdk.handler.ProtocolHandler
@@ -21,6 +23,7 @@ class KickOutProtocolHandler : ProtocolHandler<KickOutDataContent> {
      * @param p 消息体
      */
     override fun handle(p: Protocol<KickOutDataContent>) {
+        EventRegistry.post(BusinessEventType.onUserKickOut, p)
         BusinessEventRegistry.executeEventHandler { businessEventListener: BusinessEventListener ->
             businessEventListener.onUserKickOut(
                 p

@@ -4,16 +4,22 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.teamhelper.imsdk.base.BusinessEvent
+import com.teamhelper.imsdk.base.BusinessEventType
+import com.teamhelper.imsdk.base.EventSubscriber
+import com.teamhelper.imsdk.base.ServerEvent
+import com.teamhelper.imsdk.base.ServerEventType
+import com.teamhelper.imsdk.data.AckDataContent
+import com.teamhelper.imsdk.data.CommonDataContent
+import com.teamhelper.imsdk.data.ErrorDataContent
+import com.teamhelper.imsdk.data.KickOutDataContent
 import com.teamhelper.imsdk.data.LoginResultDataContent
 import com.teamhelper.imsdk.databinding.ActivityMainBinding
-import com.teamhelper.imsdk.event.BusinessEventListener
 import com.teamhelper.imsdk.netcore.NetCore
-import com.teamhelper.imsdk.netcore.ServerEventRegistry
-import com.teamhelper.imsdk.netcore.event.ServerEventListener
 import com.teamhelper.imsdk.protocol.Protocol
 
-class MainActivity : AppCompatActivity(), ServerEventListener,
-    BusinessEventListener {
+@EventSubscriber
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -31,57 +37,65 @@ class MainActivity : AppCompatActivity(), ServerEventListener,
                 NetCore.instance.sendTextMessage("Hello World")
             }, 5000)
         }
-
-        ServerEventRegistry.addServerEventListener(this)
-        BusinessEventRegistry.addBusinessEventListener(this)
     }
 
-    override fun onUserLogin(p: Protocol<LoginResultDataContent>) {
+    @BusinessEvent(BusinessEventType.onUserLogin)
+    fun onUserLogin(p: Protocol<LoginResultDataContent>) {
         Log.e("MainActivity", "onUserLoginEvent")
     }
 
-    override fun onUserKickOut(p: Protocol<com.teamhelper.imsdk.data.KickOutDataContent>) {
+    @BusinessEvent(BusinessEventType.onUserKickOut)
+    fun onUserKickOut(p: Protocol<KickOutDataContent>) {
         Log.e("MainActivity", "onUserKickOutEvent" + p.dataContent?.reason)
     }
 
-    override fun onCommonDataReceived(p: ByteArray) {
+    @BusinessEvent(BusinessEventType.onCommonDataReceived)
+    fun onCommonDataReceived(p: ByteArray) {
         Log.e("MainActivity", "onCommonDataReceived")
     }
 
-    override fun <T> onCommonDataReceived(p: Protocol<com.teamhelper.imsdk.data.CommonDataContent<T>>) {
+    @BusinessEvent(BusinessEventType.onCommonDataReceived)
+    fun <T> onCommonDataReceived(p: Protocol<CommonDataContent<T>>) {
         Log.e("MainActivity", "onCommonDataReceived")
     }
 
-
-    override fun onHeartbeat(p: Protocol<String>) {
+    @BusinessEvent(BusinessEventType.onHeartbeat)
+    fun onHeartbeat(p: Protocol<String>) {
         Log.e("MainActivity", "onHeartbeat")
     }
 
-    override fun onErrorReceived(p: Protocol<com.teamhelper.imsdk.data.ErrorDataContent>) {
+    @BusinessEvent(BusinessEventType.onErrorReceived)
+    fun onErrorReceived(p: Protocol<ErrorDataContent>) {
         Log.e("MainActivity", "onErrorReceived")
     }
 
-    override fun onAckReceived(p: Protocol<com.teamhelper.imsdk.data.AckDataContent>) {
+    @BusinessEvent(BusinessEventType.onAckReceived)
+    fun onAckReceived(p: Protocol<AckDataContent>) {
         Log.e("MainActivity", "onAckReceived")
     }
 
-    override fun onConnectOpen(response: String) {
+    @ServerEvent(ServerEventType.onConnectOpen)
+    fun onConnectOpen(response: String) {
         Log.e("MainActivity", "onConnectOpen")
     }
 
-    override fun onTextMessageRecv(message: String) {
+    @ServerEvent(ServerEventType.onTextMessageRecv)
+    fun onTextMessageRecv(message: String) {
         Log.e("MainActivity", "onTextMessageRecv")
     }
 
-    override fun onBinaryMessageRecv(binary: ByteArray) {
+    @ServerEvent(ServerEventType.onBinaryMessageRecv)
+    fun onBinaryMessageRecv(binary: ByteArray) {
         Log.e("MainActivity", "onBinaryMessageRecv")
     }
 
-    override fun onConnectClosed() {
+    @ServerEvent(ServerEventType.onConnectClosed)
+    fun onConnectClosed() {
         Log.e("MainActivity", "onConnectClosed")
     }
 
-    override fun onReconnect(retryCnt: Int, delay: Int) {
+    @ServerEvent(ServerEventType.onReconnect)
+    fun onReconnect(retryCnt: Int, delay: Int) {
         Log.e("MainActivity", "onReconnect")
     }
 }

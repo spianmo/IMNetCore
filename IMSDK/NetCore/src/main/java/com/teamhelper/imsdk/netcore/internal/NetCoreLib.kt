@@ -6,6 +6,8 @@ import com.google.gson.Gson
 import com.teamhelper.imsdk.BusinessEventRegistry
 import com.teamhelper.imsdk.handler.ProtocolHandler
 import com.teamhelper.imsdk.netcore.ServerEventRegistry
+import com.teamhelper.imsdk.base.EventRegistry
+import com.teamhelper.imsdk.base.ServerEventType
 import com.teamhelper.imsdk.protocol.Protocol
 
 @Keep
@@ -35,6 +37,7 @@ internal class NetCoreLib {
         fun onConnectOpen(response: String) {
             ServerEventRegistry.executeEventHandler {
                 it.onConnectOpen(response)
+                EventRegistry.post(ServerEventType.onConnectOpen, response)
             }
             Log.e(TAG, "onConnectOpen: $response")
         }
@@ -48,6 +51,7 @@ internal class NetCoreLib {
         fun onTextMessageRecv(message: String) {
             ServerEventRegistry.executeEventHandler {
                 it.onTextMessageRecv(message)
+                EventRegistry.post(ServerEventType.onTextMessageRecv, message)
             }
             Log.e(TAG, "onTextMessageRecv: $message")
 
@@ -77,6 +81,7 @@ internal class NetCoreLib {
         fun onBinaryMessageRecv(binary: ByteArray) {
             ServerEventRegistry.executeEventHandler {
                 it.onBinaryMessageRecv(binary)
+                EventRegistry.post(ServerEventType.onBinaryMessageRecv, binary)
             }
             Log.e(TAG, "onBinaryMessageRecv: ${binary.size}")
         }
@@ -89,6 +94,7 @@ internal class NetCoreLib {
         fun onConnectClosed() {
             ServerEventRegistry.executeEventHandler {
                 it.onConnectClosed()
+                EventRegistry.post(ServerEventType.onConnectClosed)
             }
             Log.e(TAG, "onConnectClosed")
         }
@@ -103,6 +109,7 @@ internal class NetCoreLib {
         fun onReconnect(retryCnt: Int, delay: Int) {
             ServerEventRegistry.executeEventHandler {
                 it.onReconnect(retryCnt, delay)
+                EventRegistry.post(ServerEventType.onReconnect, retryCnt, delay)
             }
             Log.e(TAG, "onReconnect retryCnt: $retryCnt, delay: $delay")
         }

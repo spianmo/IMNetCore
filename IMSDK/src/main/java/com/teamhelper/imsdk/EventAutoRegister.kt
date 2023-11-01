@@ -1,5 +1,7 @@
 package com.teamhelper.imsdk
 
+import com.teamhelper.imsdk.base.EventRegistry
+import com.teamhelper.imsdk.base.EventSubscriber
 import org.reflections.Reflections
 
 class EventAutoRegister {

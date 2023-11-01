@@ -2,6 +2,8 @@ package com.teamhelper.imsdk.handler.impl
 
 import com.google.gson.reflect.TypeToken
 import com.teamhelper.imsdk.BusinessEventRegistry
+import com.teamhelper.imsdk.base.BusinessEventType
+import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.data.LoginResultDataContent
 import com.teamhelper.imsdk.event.BusinessEventListener
 import com.teamhelper.imsdk.handler.ProtocolHandler
@@ -21,6 +23,7 @@ class LoginResponseProtocolHandler : ProtocolHandler<LoginResultDataContent> {
      * @param p 消息体
      */
     override fun handle(p: Protocol<LoginResultDataContent>) {
+        EventRegistry.post(BusinessEventType.onUserLogin, p)
         BusinessEventRegistry.executeEventHandler { businessEventListener: BusinessEventListener ->
             businessEventListener.onUserLogin(
                 p

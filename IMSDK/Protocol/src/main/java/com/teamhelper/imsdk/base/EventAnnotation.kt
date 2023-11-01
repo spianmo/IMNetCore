@@ -1,16 +1,16 @@
-package com.teamhelper.imsdk
+package com.teamhelper.imsdk.base
 
 
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.CLASS)
 annotation class EventSubscriber
 
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.FUNCTION)
 annotation class BusinessEvent(val event: BusinessEventType)
 
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.FUNCTION)
 annotation class ServerEvent(val event: ServerEventType)
 
 
