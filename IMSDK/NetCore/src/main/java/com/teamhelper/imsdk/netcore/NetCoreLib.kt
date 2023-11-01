@@ -24,11 +24,21 @@ class NetCoreLib {
         @JvmStatic
         private val TAG = NetCoreLib::class.java.simpleName
 
+        /**
+         * 连接打开回调
+         * @calledByC++
+         * @param response: String
+         */
         @JvmStatic
         fun onConnectOpen(response: String) {
             Log.e(TAG, "onConnectOpen: $response")
         }
 
+        /**
+         * opCode Text消息接收回调
+         * @calledByC++
+         * @param message: String
+         */
         @JvmStatic
         fun onTextMessageRecv(message: String) {
             Log.e(TAG, "onTextMessageRecv: $message")
@@ -50,16 +60,31 @@ class NetCoreLib {
             protocolHandler.handle(fromJson as Protocol<Any>)
         }
 
+        /**
+         * opCode Binary消息接收回调
+         * @calledByC++
+         * @param binary: ByteArray
+         */
         @JvmStatic
         fun onBinaryMessageRecv(binary: ByteArray) {
             Log.e(TAG, "onBinaryMessageRecv: ${binary.size}")
         }
 
+        /**
+         * 连接关闭回调
+         * @calledByC++
+         */
         @JvmStatic
         fun onConnectClosed() {
             Log.e(TAG, "onConnectClosed")
         }
 
+        /**
+         * 重连回调
+         * @calledByC++
+         * @param retryCnt: Int 重连次数 从1开始
+         * @param delay: Int 重连延迟时间 单位ms
+         */
         @JvmStatic
         fun onReconnect(retryCnt: Int, delay: Int) {
             Log.e(TAG, "onReconnect retryCnt: $retryCnt, delay: $delay")
