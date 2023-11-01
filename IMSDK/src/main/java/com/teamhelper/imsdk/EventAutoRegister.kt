@@ -1,8 +1,9 @@
 package com.teamhelper.imsdk
 
+import android.content.Context
+import com.highcapable.yukireflection.factory.searchClass
 import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.base.EventSubscriber
-import org.reflections.Reflections
 
 class EventAutoRegister {
     companion object {
@@ -17,16 +18,19 @@ class EventAutoRegister {
             EventRegistry.unregister(subscriber)
         }
 
-        fun autoRegisterAllSubscribers(basePackage: String) {
-            val reflections = Reflections(basePackage)
-            val subscriberClasses = reflections.getTypesAnnotatedWith(EventSubscriber::class.java)
-            for (subscriberClass in subscriberClasses) {
-                try {
-                    val constructor = subscriberClass.getConstructor()
-                    val subscriber = constructor.newInstance()
-                    register(subscriber)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+        fun autoRegisterAllSubscribers(context: Context) {
+            Companion::class.java.classLoader?.searchClass(context, async = true) {
+                from(context.packageName)
+                simpleName = "MainActivity"
+            }?.waitAll { classes ->
+                for (clazz in classes) {
+                    try {
+                        val constructor = clazz.getConstructor()
+                        val subscriber = constructor.newInstance()
+                        register(subscriber)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
         }

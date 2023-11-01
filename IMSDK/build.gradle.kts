@@ -24,11 +24,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 
@@ -38,6 +41,5 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     api(project(":IMSDK:NetCore"))
-    // https://mvnrepository.com/artifact/org.reflections/reflections
-    implementation("org.reflections:reflections:0.10.2")
+    implementation("com.highcapable.yukireflection:api:1.0.3")
 }

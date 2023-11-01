@@ -8,7 +8,9 @@ import android.net.Uri
 
 class IMInitializer : ContentProvider() {
     override fun onCreate(): Boolean {
-        EventAutoRegister.autoRegisterAllSubscribers(context!!.packageName)
+        context?.let {
+            EventAutoRegister.autoRegisterAllSubscribers(it)
+        }
         return true
     }
 
