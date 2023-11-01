@@ -38,4 +38,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     api(project(":IMSDK:NetCore"))
+    // https://mvnrepository.com/artifact/org.reflections/reflections
+    implementation("org.reflections:reflections:0.10.2")
 }
