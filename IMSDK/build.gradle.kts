@@ -42,4 +42,5 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
     api(project(":IMSDK:NetCore"))
     implementation("com.highcapable.yukireflection:api:1.0.3")
+    implementation(project(":IMSDK:EpicHook"))
 }

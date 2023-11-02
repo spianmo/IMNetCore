@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.teamhelper.imsdk.BusinessEventRegistry
-import com.teamhelper.imsdk.handler.ProtocolHandler
-import com.teamhelper.imsdk.netcore.ServerEventRegistry
 import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.base.ServerEventType
+import com.teamhelper.imsdk.handler.ProtocolHandler
+import com.teamhelper.imsdk.netcore.ServerEventRegistry
 import com.teamhelper.imsdk.protocol.Protocol
 
 @Keep
@@ -28,6 +28,9 @@ internal class NetCoreLib {
         @JvmStatic
         private val TAG = NetCoreLib::class.java.simpleName
 
+        @JvmStatic
+        var DEBUG = false
+
         /**
          * 连接打开回调
          * @calledByC++
@@ -35,11 +38,11 @@ internal class NetCoreLib {
          */
         @JvmStatic
         fun onConnectOpen(response: String) {
+            EventRegistry.post(ServerEventType.onConnectOpen, response)
             ServerEventRegistry.executeEventHandler {
                 it.onConnectOpen(response)
-                EventRegistry.post(ServerEventType.onConnectOpen, response)
             }
-            Log.e(TAG, "onConnectOpen: $response")
+            logD("onConnectOpen: $response")
         }
 
         /**
@@ -49,22 +52,22 @@ internal class NetCoreLib {
          */
         @JvmStatic
         fun onTextMessageRecv(message: String) {
+            EventRegistry.post(ServerEventType.onTextMessageRecv, message)
             ServerEventRegistry.executeEventHandler {
                 it.onTextMessageRecv(message)
-                EventRegistry.post(ServerEventType.onTextMessageRecv, message)
             }
-            Log.e(TAG, "onTextMessageRecv: $message")
+            logD("onTextMessageRecv: $message")
 
             val anyProtocol = Gson().fromJson(message, Protocol::class.java)
             if (anyProtocol.type == null) {
-                Log.e(TAG, "onTextMessageRecv: Irregular protocol format, type == null")
+                logD("onTextMessageRecv: Irregular protocol format, type == null")
                 return
             }
             val protocolHandler: ProtocolHandler<Any>? =
                 BusinessEventRegistry.getProtocolHandler(anyProtocol.type!!) as ProtocolHandler<Any>?
 
             if (protocolHandler == null) {
-                Log.e(TAG, "onTextMessageRecv: unknown protocol")
+                logD("onTextMessageRecv: unknown protocol")
                 return
             }
 
@@ -79,11 +82,11 @@ internal class NetCoreLib {
          */
         @JvmStatic
         fun onBinaryMessageRecv(binary: ByteArray) {
+            EventRegistry.post(ServerEventType.onBinaryMessageRecv, binary)
             ServerEventRegistry.executeEventHandler {
                 it.onBinaryMessageRecv(binary)
-                EventRegistry.post(ServerEventType.onBinaryMessageRecv, binary)
             }
-            Log.e(TAG, "onBinaryMessageRecv: ${binary.size}")
+            logD("onBinaryMessageRecv: ${binary.size}")
         }
 
         /**
@@ -92,11 +95,11 @@ internal class NetCoreLib {
          */
         @JvmStatic
         fun onConnectClosed() {
+            EventRegistry.post(ServerEventType.onConnectClosed)
             ServerEventRegistry.executeEventHandler {
                 it.onConnectClosed()
-                EventRegistry.post(ServerEventType.onConnectClosed)
             }
-            Log.e(TAG, "onConnectClosed")
+            logD("onConnectClosed")
         }
 
         /**
@@ -107,11 +110,18 @@ internal class NetCoreLib {
          */
         @JvmStatic
         fun onReconnect(retryCnt: Int, delay: Int) {
+            EventRegistry.post(ServerEventType.onReconnect, retryCnt, delay)
             ServerEventRegistry.executeEventHandler {
                 it.onReconnect(retryCnt, delay)
-                EventRegistry.post(ServerEventType.onReconnect, retryCnt, delay)
             }
-            Log.e(TAG, "onReconnect retryCnt: $retryCnt, delay: $delay")
+            logD("onReconnect retryCnt: $retryCnt, delay: $delay")
+        }
+
+        @JvmStatic
+        private fun logD(str: String) {
+            if (DEBUG) {
+                Log.d(TAG, str)
+            }
         }
     }
 }
