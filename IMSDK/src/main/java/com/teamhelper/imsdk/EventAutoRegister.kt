@@ -19,7 +19,7 @@ class EventAutoRegister(context: Context) {
         val packageInfo = context.packageManager.getPackageInfo(
             context.packageName, PackageManager.GET_ACTIVITIES
         )
-        val activities = packageInfo.activities.map { it.name }
+        val activities = packageInfo.activities.map { it.packageName }.distinct()
         findSubscribeClazz(apkPath, activities)
     }
 
@@ -47,7 +47,8 @@ class EventAutoRegister(context: Context) {
                     }
                 })
 
-            DexposedBridge.hookAllMethods(exploreClassHierarchy(clazz, "onDestroy"), "onDestroy",
+            DexposedBridge.hookAllMethods(
+                exploreClassHierarchy(clazz, "onDestroy"), "onDestroy",
                 object : XC_MethodHook() {
                     @Throws(Throwable::class)
                     override fun beforeHookedMethod(param: MethodHookParam) {
