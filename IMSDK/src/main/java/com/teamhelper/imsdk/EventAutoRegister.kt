@@ -1,6 +1,7 @@
 package com.teamhelper.imsdk
 
 import android.content.Context
+import android.content.pm.PackageManager
 import com.highcapable.yukireflection.factory.searchClass
 import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.base.EventSubscriber
@@ -25,8 +26,13 @@ class EventAutoRegister {
         }
 
         fun autoRegisterAllSubscribers(context: Context) {
+            val packageInfo = context.packageManager.getPackageInfo(
+                context.packageName, PackageManager.GET_ACTIVITIES
+            )
+            val activities = packageInfo.activities.map { it.packageName }.distinct().toTypedArray()
+
             Companion::class.java.classLoader?.searchClass(context) {
-                from(context.packageName)
+                from(*activities)
                 method {
                     name = "onCreate"
                 }.count(num = 1)
@@ -36,8 +42,9 @@ class EventAutoRegister {
             }?.all()?.stream()?.distinct()?.filter {
                 it.isAnnotationPresent(EventSubscriber::class.java)
             }?.forEach { clazz ->
-                DexposedBridge.hookAllConstructors(
+                DexposedBridge.hookAllMethods(
                     clazz,
+                    "onCreate",
                     object : XC_MethodHook() {
                         @Throws(Throwable::class)
                         override fun afterHookedMethod(param: MethodHookParam) {
