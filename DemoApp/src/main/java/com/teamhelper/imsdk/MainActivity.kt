@@ -1,5 +1,6 @@
 package com.teamhelper.imsdk
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -35,8 +36,8 @@ class MainActivity : AppCompatActivity() {
             NetCore.instance.connect()
             Handler(mainLooper).postDelayed({
                 NetCore.instance.sendTextMessage("Hello World")
-                finish()
             }, 10000)
+            startActivity(Intent(this, SecondActivity::class.java))
         }
     }
 

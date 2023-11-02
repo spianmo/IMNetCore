@@ -33,6 +33,11 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
 }
 
 dependencies {
@@ -41,7 +46,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     api(project(":IMSDK:NetCore"))
-    implementation("com.highcapable.yukireflection:api:1.0.3")
-    implementation(project(":IMSDK:EpicHook"))
     implementation("org.luckypray:dexkit:2.0.0-rc7")
+    implementation(project(":IMSDK:EpicHook"))
 }
