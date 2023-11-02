@@ -43,4 +43,5 @@ dependencies {
     api(project(":IMSDK:NetCore"))
     implementation("com.highcapable.yukireflection:api:1.0.3")
     implementation(project(":IMSDK:EpicHook"))
+    implementation("org.luckypray:dexkit:2.0.0-rc7")
 }

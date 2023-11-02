@@ -27,6 +27,12 @@ class EventAutoRegister {
         fun autoRegisterAllSubscribers(context: Context) {
             Companion::class.java.classLoader?.searchClass(context) {
                 from(context.packageName)
+                method {
+                    name = "onCreate"
+                }.count(num = 1)
+                method {
+                    name = "onDestroy"
+                }.count(num = 1)
             }?.all()?.stream()?.distinct()?.filter {
                 it.isAnnotationPresent(EventSubscriber::class.java)
             }?.forEach { clazz ->
@@ -37,6 +43,17 @@ class EventAutoRegister {
                         override fun afterHookedMethod(param: MethodHookParam) {
                             super.afterHookedMethod(param)
                             register(param.thisObject)
+                        }
+                    })
+
+                DexposedBridge.hookAllMethods(
+                    clazz,
+                    "onDestroy",
+                    object : XC_MethodHook() {
+                        @Throws(Throwable::class)
+                        override fun beforeHookedMethod(param: MethodHookParam) {
+                            super.beforeHookedMethod(param)
+                            unregister(param.thisObject)
                         }
                     })
             }
