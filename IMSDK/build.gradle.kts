@@ -46,6 +46,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     api(project(":IMSDK:NetCore"))
-    implementation("org.luckypray:dexkit:2.0.0-rc7")
+    implementation("com.highcapable.yukireflection:api:1.0.3")
     implementation(project(":IMSDK:EpicHook"))
 }
