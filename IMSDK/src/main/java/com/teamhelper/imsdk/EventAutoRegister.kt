@@ -2,6 +2,8 @@ package com.teamhelper.imsdk
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Bundle
+import android.util.Log
 import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.base.EventSubscriber
 import de.robv.android.xposed.DexposedBridge
@@ -37,25 +39,36 @@ class EventAutoRegister(context: Context) {
             }
         }?.stream()?.distinct()?.forEach {
             val clazz = it.getInstance(hostClassLoader)
-            DexposedBridge.hookAllMethods(
-                exploreClassHierarchy(clazz, "onCreate"), "onCreate",
-                object : XC_MethodHook() {
-                    @Throws(Throwable::class)
-                    override fun afterHookedMethod(param: MethodHookParam) {
-                        super.afterHookedMethod(param)
-                        register(param.thisObject)
-                    }
-                })
 
-            DexposedBridge.hookAllMethods(
-                exploreClassHierarchy(clazz, "onDestroy"), "onDestroy",
-                object : XC_MethodHook() {
-                    @Throws(Throwable::class)
-                    override fun beforeHookedMethod(param: MethodHookParam) {
-                        super.beforeHookedMethod(param)
-                        unregister(param.thisObject)
-                    }
-                })
+            val onCreateMethod =
+                exploreClassHierarchy(clazz, "onCreate")?.getDeclaredMethod(
+                    "onCreate",
+                    Bundle::class.java
+                )
+            if (!DexposedBridge.isMethodHooked(onCreateMethod)) {
+                DexposedBridge.hookMethod(onCreateMethod,
+                    object : XC_MethodHook() {
+                        @Throws(Throwable::class)
+                        override fun afterHookedMethod(param: MethodHookParam) {
+                            super.afterHookedMethod(param)
+                            register(param.thisObject)
+                        }
+                    })
+            }
+
+            val onDestroyMethod =
+                exploreClassHierarchy(clazz, "onDestroy")?.getDeclaredMethod("onDestroy")
+            if (!DexposedBridge.isMethodHooked(onDestroyMethod)) {
+                DexposedBridge.hookMethod(onDestroyMethod,
+                    object : XC_MethodHook() {
+                        @Throws(Throwable::class)
+                        override fun beforeHookedMethod(param: MethodHookParam) {
+                            super.beforeHookedMethod(param)
+                            Log.e("EventAutoRegister", "unregister")
+                            unregister(param.thisObject)
+                        }
+                    })
+            }
         }
     }
 

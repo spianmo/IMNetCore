@@ -41,10 +41,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     @BusinessEvent(BusinessEventType.onUserLogin)
     fun onUserLogin(p: Protocol<LoginResultDataContent>) {
         Log.e("MainActivity", "onUserLoginEvent")
