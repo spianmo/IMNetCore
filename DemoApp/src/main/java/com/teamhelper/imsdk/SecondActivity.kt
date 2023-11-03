@@ -26,8 +26,4 @@ class SecondActivity : AppCompatActivity() {
     fun onReconnect(retryCnt: Int, delay: Int) {
         Log.e("SecondActivity", "onReconnect")
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }

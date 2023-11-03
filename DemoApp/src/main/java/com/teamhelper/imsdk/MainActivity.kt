@@ -32,10 +32,13 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        val testSubscriber = TestSubscriber()
+
         binding.fab.setOnClickListener {
             NetCore.instance.connect()
             Handler(mainLooper).postDelayed({
                 NetCore.instance.sendTextMessage("Hello World")
+                testSubscriber.release()
             }, 10000)
             startActivity(Intent(this, SecondActivity::class.java))
         }
