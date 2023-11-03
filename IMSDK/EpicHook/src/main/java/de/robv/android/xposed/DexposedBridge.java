@@ -162,6 +162,16 @@ public final class DexposedBridge {
         callbacks.remove(callback);
     }
 
+    public static boolean isMethodHooked(Member hookMethod) {
+        CopyOnWriteSortedSet<XC_MethodHook> callbacks;
+        synchronized (hookedMethodCallbacks) {
+            callbacks = hookedMethodCallbacks.get(hookMethod);
+            if (callbacks == null)
+                return false;
+        }
+        return true;
+    }
+
     public static Set<XC_MethodHook.Unhook> hookAllMethods(Class<?> hookClass, String methodName, XC_MethodHook callback) {
         Set<XC_MethodHook.Unhook> unhooks = new HashSet<XC_MethodHook.Unhook>();
         for (Member method : hookClass.getDeclaredMethods())

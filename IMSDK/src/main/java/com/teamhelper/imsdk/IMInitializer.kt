@@ -9,7 +9,7 @@ import android.net.Uri
 class IMInitializer : ContentProvider() {
     override fun onCreate(): Boolean {
         context?.let {
-            EventAutoRegister.autoRegisterAllSubscribers(it)
+            EventAutoRegister(it)
         }
         return true
     }
