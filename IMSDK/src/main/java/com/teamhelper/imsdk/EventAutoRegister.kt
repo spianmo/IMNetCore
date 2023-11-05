@@ -63,6 +63,7 @@ class EventAutoRegister(context: Context) {
     private fun hookCommonClazz(context: Context) {
         hostClassLoader.searchClass(context) {
             extends<EventLifecycleSubscriber>()
+            annotations<EventSubscriber>()
         }.all().stream().distinct()?.filter {
             it.isAnnotationPresent(EventSubscriber::class.java)
         }?.forEach { clazz ->

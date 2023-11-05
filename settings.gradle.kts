@@ -20,6 +20,7 @@ dependencyResolutionManagement {
 rootProject.name = "IMSDKProject"
 include(":DemoApp")
 include(":IMSDK")
+include(":IMSDK:YukiReflection")
 include(":IMSDK:EpicHook")
 include(":IMSDK:NetCore")
 include(":IMSDK:Protocol")
