@@ -46,6 +46,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     api(project(":IMSDK:NetCore"))
-    implementation(project(":IMSDK:EpicHook"))
+    implementation("com.aliucord:Aliuhook:main-SNAPSHOT")
     implementation(project(":IMSDK:YukiReflection"))
 }
