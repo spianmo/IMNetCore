@@ -6,8 +6,8 @@ import android.content.Context
 import android.os.Bundle
 import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.base.EventSubscriber
-import de.robv.android.xposed.DexposedBridge
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import org.luckypray.dexkit.DexKitBridge
 import java.lang.reflect.Method
 
@@ -37,8 +37,8 @@ class EventAutoRegister(context: Context) {
     )
 
     private fun hookComponent(onCreateMethod: Method, onDestroyMethod: Method) {
-        if (!DexposedBridge.isMethodHooked(onCreateMethod)) {
-            DexposedBridge.hookMethod(onCreateMethod,
+        if (!XposedBridge.isHooked(onCreateMethod)) {
+            XposedBridge.hookMethod(onCreateMethod,
                 object : XC_MethodHook() {
                     @Throws(Throwable::class)
                     override fun afterHookedMethod(param: MethodHookParam) {
@@ -48,8 +48,8 @@ class EventAutoRegister(context: Context) {
                 })
         }
 
-        if (!DexposedBridge.isMethodHooked(onDestroyMethod)) {
-            DexposedBridge.hookMethod(onDestroyMethod,
+        if (!XposedBridge.isHooked(onDestroyMethod)) {
+            XposedBridge.hookMethod(onDestroyMethod,
                 object : XC_MethodHook() {
                     @Throws(Throwable::class)
                     override fun beforeHookedMethod(param: MethodHookParam) {
@@ -77,7 +77,7 @@ class EventAutoRegister(context: Context) {
         }?.stream()?.distinct()?.forEach {
             val clazz = it.getInstance(hostClassLoader)
 
-            DexposedBridge.hookAllConstructors(clazz,
+            XposedBridge.hookAllConstructors(clazz,
                 object : XC_MethodHook() {
                     @Throws(Throwable::class)
                     override fun beforeHookedMethod(param: MethodHookParam) {
@@ -88,8 +88,8 @@ class EventAutoRegister(context: Context) {
         }
         val releaseMethod =
             EventLifecycleSubscriber::class.java.getDeclaredMethod(EventLifecycleSubscriber::release.name)
-        if (!DexposedBridge.isMethodHooked(releaseMethod)) {
-            DexposedBridge.hookMethod(releaseMethod,
+        if (!XposedBridge.isHooked(releaseMethod)) {
+            XposedBridge.hookMethod(releaseMethod,
                 object : XC_MethodHook() {
                     @Throws(Throwable::class)
                     override fun beforeHookedMethod(param: MethodHookParam) {

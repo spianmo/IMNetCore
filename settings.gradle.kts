@@ -14,13 +14,13 @@ dependencyResolutionManagement {
         mavenCentral()
         maven("https://jitpack.io")
         maven("https://jcenter.bintray.com/")
+        maven("https://maven.aliucord.com/snapshots")
     }
 }
 
 rootProject.name = "IMSDKProject"
 include(":DemoApp")
 include(":IMSDK")
-include(":IMSDK:EpicHook")
 include(":IMSDK:NetCore")
 include(":IMSDK:Protocol")
 include(":IMUI")
