@@ -48,8 +48,8 @@ import java.lang.reflect.Method
  * @param isAnonymousClass 匿名类
  * @param isNoExtendsClass 无继承的父类
  * @param isNoImplementsClass 无继承的实现的接口类
- * @param extendsClass 继承的父类名称数组
  * @param annotationClass 注解类名称数组
+ * @param extendsClass 继承的父类名称数组
  * @param implementsClass 实现的接口类名称数组
  * @param enclosingClass 包含的封闭类 (主类) 名称数组
  * @param memberRules [Member] 查找条件数据数组
@@ -68,8 +68,8 @@ internal class ClassRulesData internal constructor(
     var isAnonymousClass: Boolean? = null,
     var isNoExtendsClass: Boolean? = null,
     var isNoImplementsClass: Boolean? = null,
-    var extendsClass: MutableList<String> = mutableListOf(),
     var annotationClass: MutableList<String> = mutableListOf(),
+    var extendsClass: MutableList<String> = mutableListOf(),
     var implementsClass: MutableList<String> = mutableListOf(),
     var enclosingClass: MutableList<String> = mutableListOf(),
     var memberRules: MutableList<MemberRulesData> = mutableListOf(),
@@ -97,15 +97,24 @@ internal class ClassRulesData internal constructor(
      * @param instance 当前 [Class] 实例
      * @return [String]
      */
-    internal fun classSingleName(instance: Class<*>) = instance.simpleName.takeIf { it.isNotBlank() }
-        ?: instance.enclosingClass?.let { it.simpleName + instance.name.replace(it.name, newValue = "") } ?: ""
+    internal fun classSingleName(instance: Class<*>) =
+        instance.simpleName.takeIf { it.isNotBlank() }
+            ?: instance.enclosingClass?.let {
+                it.simpleName + instance.name.replace(
+                    it.name,
+                    newValue = ""
+                )
+            } ?: ""
 
     /**
      * 类名匹配条件查找数据类
      * @param name 包名
      * @param isOptional 是否可选 - 默认否
      */
-    inner class NameRulesData internal constructor(var name: String, var isOptional: Boolean = false) {
+    inner class NameRulesData internal constructor(
+        var name: String,
+        var isOptional: Boolean = false
+    ) {
 
         /** [Class.getName] */
         internal val TYPE_NAME = 0
@@ -137,7 +146,10 @@ internal class ClassRulesData internal constructor(
      * @param name 包名
      * @param isAbsolute 是否绝对匹配 - 默认否
      */
-    inner class PackageRulesData internal constructor(var name: String, var isAbsolute: Boolean = false) {
+    inner class PackageRulesData internal constructor(
+        var name: String,
+        var isAbsolute: Boolean = false
+    ) {
         override fun toString() = "$name absolute($isAbsolute)"
     }
 
@@ -158,21 +170,25 @@ internal class ClassRulesData internal constructor(
             extendsClass.takeIf { it.isNotEmpty() }?.let { "extendsClass:$it" } ?: "",
             implementsClass.takeIf { it.isNotEmpty() }?.let { "implementsClass:$it" } ?: "",
             enclosingClass.takeIf { it.isNotEmpty() }?.let { "enclosingClass:$it" } ?: "",
-            memberRules.takeIf { it.isNotEmpty() }?.let { "memberRules:[${it.size} existed]" } ?: "",
+            memberRules.takeIf { it.isNotEmpty() }?.let { "memberRules:[${it.size} existed]" }
+                ?: "",
             fieldRules.takeIf { it.isNotEmpty() }?.let { "fieldRules:[${it.size} existed]" } ?: "",
-            methodRules.takeIf { it.isNotEmpty() }?.let { "methodRules:[${it.size} existed]" } ?: "",
-            constroctorRules.takeIf { it.isNotEmpty() }?.let { "constroctorRules:[${it.size} existed]" } ?: ""
+            methodRules.takeIf { it.isNotEmpty() }?.let { "methodRules:[${it.size} existed]" }
+                ?: "",
+            constroctorRules.takeIf { it.isNotEmpty() }
+                ?.let { "constroctorRules:[${it.size} existed]" } ?: ""
         )
 
     override val objectName get() = "Class"
 
     override val isInitialize
         get() = super.isInitialize || fromPackages.isNotEmpty() || fullName != null || simpleName != null || singleName != null ||
-            fullNameConditions != null || simpleNameConditions != null || singleNameConditions != null || isAnonymousClass != null ||
-            isNoExtendsClass != null || isNoImplementsClass != null || annotationClass.isNotEmpty() || extendsClass.isNotEmpty() || enclosingClass.isNotEmpty() ||
-            memberRules.isNotEmpty() || fieldRules.isNotEmpty() || methodRules.isNotEmpty() || constroctorRules.isNotEmpty()
+                fullNameConditions != null || simpleNameConditions != null || singleNameConditions != null || isAnonymousClass != null ||
+                isNoExtendsClass != null || isNoImplementsClass != null || annotationClass.isNotEmpty() || extendsClass.isNotEmpty() || enclosingClass.isNotEmpty() ||
+                memberRules.isNotEmpty() || fieldRules.isNotEmpty() || methodRules.isNotEmpty() || constroctorRules.isNotEmpty()
 
-    override fun toString() = "[$fromPackages][$fullName][$simpleName][$singleName][$fullNameConditions][$simpleNameConditions]" +
-        "[$singleNameConditions][$modifiers][$isAnonymousClass][$isNoExtendsClass][$isNoImplementsClass][$annotationClass][$extendsClass][$implementsClass]" +
-        "[$enclosingClass][$memberRules][$fieldRules][$methodRules][$constroctorRules]" + super.toString()
+    override fun toString() =
+        "[$fromPackages][$fullName][$simpleName][$singleName][$fullNameConditions][$simpleNameConditions]" +
+                "[$singleNameConditions][$modifiers][$isAnonymousClass][$isNoExtendsClass][$isNoImplementsClass][$annotationClass][$extendsClass][$implementsClass]" +
+                "[$enclosingClass][$memberRules][$fieldRules][$methodRules][$constroctorRules]" + super.toString()
 }

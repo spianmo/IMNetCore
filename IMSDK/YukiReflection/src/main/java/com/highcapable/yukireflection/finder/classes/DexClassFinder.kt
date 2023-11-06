@@ -79,13 +79,22 @@ class DexClassFinder internal constructor(
          * @param versionCode 版本号 - 默认空
          * @return [SharedPreferences] or null
          */
-        private fun Context.currentSp(versionName: String? = null, versionCode: Long? = null) = runCatching {
-            @Suppress("NewApi", "DEPRECATION", "KotlinRedundantDiagnosticSuppress")
-            getSharedPreferences(packageManager?.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-                ?.let { "${CACHE_FILE_NAME}_${versionName ?: it.versionName}_${versionCode ?: runCatching { it.longVersionCode }.getOrNull() ?: it.versionCode}" }
-                ?: "${CACHE_FILE_NAME}_unknown",
-                Context.MODE_PRIVATE)
-        }.onFailure { YLog.warn(msg = "Failed to read app's SharedPreferences when using DexClassFinder", e = it) }.getOrNull()
+        private fun Context.currentSp(versionName: String? = null, versionCode: Long? = null) =
+            runCatching {
+                @Suppress("NewApi", "DEPRECATION", "KotlinRedundantDiagnosticSuppress")
+                getSharedPreferences(packageManager?.getPackageInfo(
+                    packageName,
+                    PackageManager.GET_META_DATA
+                )
+                    ?.let { "${CACHE_FILE_NAME}_${versionName ?: it.versionName}_${versionCode ?: runCatching { it.longVersionCode }.getOrNull() ?: it.versionCode}" }
+                    ?: "${CACHE_FILE_NAME}_unknown",
+                    Context.MODE_PRIVATE)
+            }.onFailure {
+                YLog.warn(
+                    msg = "Failed to read app's SharedPreferences when using DexClassFinder",
+                    e = it
+                )
+            }.getOrNull()
 
         /**
          * 清除当前 [DexClassFinder] 的 [Class] 缓存
@@ -96,7 +105,8 @@ class DexClassFinder internal constructor(
          * @param versionCode 版本号 - 默认空
          */
         fun clearCache(context: Context, versionName: String? = null, versionCode: Long? = null) =
-            context.currentSp(versionName, versionCode)?.edit()?.clear()?.apply() ?: YLog.warn(msg = "Failed to clear DexClassFinder's cache")
+            context.currentSp(versionName, versionCode)?.edit()?.clear()?.apply()
+                ?: YLog.warn(msg = "Failed to clear DexClassFinder's cache")
     }
 
     override var rulesData = ClassRulesData()
@@ -162,10 +172,12 @@ class DexClassFinder internal constructor(
      * @param name 指定包名
      * @return [FromPackageRules] 可设置 [FromPackageRules.absolute] 标识包名绝对匹配
      */
-    fun from(vararg name: String) = FromPackageRules(mutableListOf<ClassRulesData.PackageRulesData>().also {
-        name.takeIf { e -> e.isNotEmpty() }?.forEach { e -> it.add(rulesData.createPackageRulesData(e)) }
-        if (it.isNotEmpty()) rulesData.fromPackages.addAll(it)
-    })
+    fun from(vararg name: String) =
+        FromPackageRules(mutableListOf<ClassRulesData.PackageRulesData>().also {
+            name.takeIf { e -> e.isNotEmpty() }
+                ?.forEach { e -> it.add(rulesData.createPackageRulesData(e)) }
+            if (it.isNotEmpty()) rulesData.fromPackages.addAll(it)
+        })
 
     /**
      * 设置 [Class] 标识符筛选条件
@@ -259,7 +271,7 @@ class DexClassFinder internal constructor(
     }
 
     /**
-     * 设置 [Class] 继承的父类
+     * 设置 [Class] 修饰的注解
      *
      * 会同时查找 [name] 中所有匹配的父类
      * @param name [Class] 完整名称
@@ -274,9 +286,9 @@ class DexClassFinder internal constructor(
     }
 
     /**
-     * 设置 [Class] 修饰的注解
+     * 设置 [Class] 继承的父类
      *
-     * 会同时查找 [name] 中所有匹配的注解类
+     * 会同时查找 [name] 中所有匹配的父类
      * @param name [Class] 完整名称
      */
     fun annotations(vararg name: String) {
@@ -411,28 +423,32 @@ class DexClassFinder internal constructor(
      * @param initiate 条件方法体
      * @return [MemberRulesResult]
      */
-    inline fun member(initiate: MemberRules.() -> Unit = {}) = BaseRules.createMemberRules(this).apply(initiate).build()
+    inline fun member(initiate: MemberRules.() -> Unit = {}) =
+        BaseRules.createMemberRules(this).apply(initiate).build()
 
     /**
      * 设置 [Class] 满足的 [Field] 条件
      * @param initiate 条件方法体
      * @return [MemberRulesResult]
      */
-    inline fun field(initiate: FieldRules.() -> Unit = {}) = BaseRules.createFieldRules(this).apply(initiate).build()
+    inline fun field(initiate: FieldRules.() -> Unit = {}) =
+        BaseRules.createFieldRules(this).apply(initiate).build()
 
     /**
      * 设置 [Class] 满足的 [Method] 条件
      * @param initiate 条件方法体
      * @return [MemberRulesResult]
      */
-    inline fun method(initiate: MethodRules.() -> Unit = {}) = BaseRules.createMethodRules(this).apply(initiate).build()
+    inline fun method(initiate: MethodRules.() -> Unit = {}) =
+        BaseRules.createMethodRules(this).apply(initiate).build()
 
     /**
      * 设置 [Class] 满足的 [Constructor] 条件
      * @param initiate 查找方法体
      * @return [MemberRulesResult]
      */
-    inline fun constructor(initiate: ConstructorRules.() -> Unit = {}) = BaseRules.createConstructorRules(this).apply(initiate).build()
+    inline fun constructor(initiate: ConstructorRules.() -> Unit = {}) =
+        BaseRules.createConstructorRules(this).apply(initiate).build()
 
     /**
      * 得到 [Class] 或一组 [Class]
@@ -448,7 +464,13 @@ class DexClassFinder internal constructor(
     private fun readFromCache(): MutableList<Class<*>> =
         if (async && name.isNotBlank()) mutableListOf<Class<*>>().also { classes ->
             context?.currentSp()?.getStringSet(name, emptySet())?.takeIf { it.isNotEmpty() }
-                ?.forEach { className -> if (className.hasClass(loaderSet)) classes.add(className.toClass(loaderSet)) }
+                ?.forEach { className ->
+                    if (className.hasClass(loaderSet)) classes.add(
+                        className.toClass(
+                            loaderSet
+                        )
+                    )
+                }
         } else mutableListOf()
 
     /**
@@ -460,7 +482,9 @@ class DexClassFinder internal constructor(
             takeIf { it.isNotEmpty() }?.forEach { names.add(it.name) }
             context?.also {
                 if (it.packageName == "android") error("Cannot create classes cache for \"android\", please remove \"name\" param")
-                it.currentSp()?.edit()?.apply { putStringSet(name, names) }?.apply() ?: YLog.warn(msg = "Failed to use caching in DexClassFinder")
+                it.currentSp()?.edit()?.apply { putStringSet(name, names) }?.apply() ?: YLog.warn(
+                    msg = "Failed to use caching in DexClassFinder"
+                )
             }
         }
     }
@@ -480,7 +504,10 @@ class DexClassFinder internal constructor(
             fun startProcess() {
                 runBlocking {
                     setInstance(readFromCache().takeIf { it.isNotEmpty() } ?: result)
-                }.result { ms -> classInstances.takeIf { it.isNotEmpty() }?.forEach { debugMsg(msg = "Find Class [$it] takes ${ms}ms") } }
+                }.result { ms ->
+                    classInstances.takeIf { it.isNotEmpty() }
+                        ?.forEach { debugMsg(msg = "Find Class [$it] takes ${ms}ms") }
+                }
             }
             Result().also { e ->
                 if (async) e.await {
@@ -604,7 +631,8 @@ class DexClassFinder internal constructor(
          * @return [Result] 可继续向下监听
          */
         fun onNoClassDefFoundError(result: (Throwable) -> Unit): Result {
-            noClassDefFoundErrorCallback = { if (isNotFound) result(throwable ?: Throwable("Initialization Error")) }
+            noClassDefFoundErrorCallback =
+                { if (isNotFound) result(throwable ?: Throwable("Initialization Error")) }
             noClassDefFoundErrorCallback?.invoke()
             return this
         }

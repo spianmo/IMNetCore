@@ -10,7 +10,13 @@ android {
     defaultConfig {
         minSdk = 24
 
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildTypes {
@@ -38,6 +44,8 @@ android {
         )
     }
 }
+
+
 
 dependencies {
     compileOnly(files("libs/android-34.jar"))

@@ -69,8 +69,7 @@ object YukiReflection {
          * 配置 [YLog.Configs] 相关参数
          * @param initiate 方法体
          */
-        inline fun debugLog(initiate: YLog.Configs.() -> Unit) =
-            YLog.Configs.apply(initiate).build()
+        inline fun debugLog(initiate: YLog.Configs.() -> Unit) = YLog.Configs.apply(initiate).build()
 
         /**
          * 这是一个调试日志的全局标识
@@ -80,8 +79,7 @@ object YukiReflection {
          * - 请现在迁移到 [debugLog] 并使用 [YLog.Configs.tag]
          */
         @Deprecated(message = "请使用新方式来实现此功能")
-        var debugTag
-            get() = YLog.Configs.tag
+        var debugTag get() = YLog.Configs.tag
             set(value) {
                 YLog.Configs.tag = value
             }
@@ -103,8 +101,7 @@ object YukiReflection {
          * - 请现在迁移到 [debugLog] 并使用 [YLog.Configs.isEnable]
          */
         @Deprecated(message = "请使用新方式来实现此功能")
-        var isAllowPrintingLogs
-            get() = YLog.Configs.isEnable
+        var isAllowPrintingLogs get() = YLog.Configs.isEnable
             set(value) {
                 YLog.Configs.isEnable = value
             }
