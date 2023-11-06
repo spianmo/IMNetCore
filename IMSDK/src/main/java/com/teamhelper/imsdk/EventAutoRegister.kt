@@ -64,9 +64,7 @@ class EventAutoRegister(context: Context) {
         hostClassLoader.searchClass(context) {
             extends<EventLifecycleSubscriber>()
             annotations<EventSubscriber>()
-        }.all().stream().distinct()?.filter {
-            it.isAnnotationPresent(EventSubscriber::class.java)
-        }?.forEach { clazz ->
+        }.all().stream().distinct()?.forEach { clazz ->
             XposedBridge.hookAllConstructors(clazz,
                 object : XC_MethodHook() {
                     @Throws(Throwable::class)
