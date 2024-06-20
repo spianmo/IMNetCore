@@ -50,7 +50,7 @@ Java_com_teamhelper_imsdk_netcore_internal_NetCoreLib_sendBinaryMessage(JNIEnv *
     }
     jbyte *data = env->GetByteArrayElements(req, 0);
     jsize len = env->GetArrayLength(req);
-    clientPtr->send((const char *) data, len);
+    clientPtr->send((const char *) data, len, WS_OPCODE_BINARY);
     env->ReleaseByteArrayElements(req, data, 0);
 }
 extern "C"

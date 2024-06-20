@@ -1,6 +1,10 @@
+import com.google.protobuf.gradle.id
+import com.google.protobuf.gradle.proto
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("com.google.protobuf") version "0.9.4"
 }
 
 android {
@@ -32,13 +36,44 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    sourceSets {
+        getByName("main") {
+            java {
+                srcDir("build/generated/source/proto/main/java")
+            }
+            kotlin {
+                srcDir("build/generated/source/proto/main/kotlin")
+            }
+            proto {
+                srcDir("src/main/proto")
+            }
+        }
+    }
+
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:4.27.1"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.plugins {
+                id("java") { }
+                id("kotlin") { }
+            }
+        }
+    }
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation("com.google.code.gson:gson:2.10.1")
+    api("com.google.protobuf:protobuf-java:4.27.1")
+    api("com.google.protobuf:protobuf-kotlin:4.27.1")
 }
+

@@ -7,7 +7,7 @@ import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.data.CommonDataContent
 import com.teamhelper.imsdk.event.BusinessEventListener
 import com.teamhelper.imsdk.handler.ProtocolHandler
-import com.teamhelper.imsdk.protocol.Protocol
+import com.teamhelper.imsdk.protocol.ProtocolWrapper
 import java.lang.reflect.Type
 
 /**
@@ -22,7 +22,7 @@ class CommonProtocolHandler : ProtocolHandler<CommonDataContent<Any>> {
      *
      * @param p 消息体
      */
-    override fun handle(p: Protocol<CommonDataContent<Any>>) {
+    override fun handle(p: ProtocolWrapper<CommonDataContent<Any>>) {
         EventRegistry.post(BusinessEventType.onCommonDataReceived, p)
         BusinessEventRegistry.executeEventHandler { businessEventListener: BusinessEventListener ->
             businessEventListener.onCommonDataReceived(
@@ -32,6 +32,6 @@ class CommonProtocolHandler : ProtocolHandler<CommonDataContent<Any>> {
     }
 
     override fun getGenericType(): Type {
-        return object : TypeToken<Protocol<CommonDataContent<Any>>>() {}.type
+        return object : TypeToken<ProtocolWrapper<CommonDataContent<Any>>>() {}.type
     }
 }

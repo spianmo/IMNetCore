@@ -8,7 +8,7 @@ import com.teamhelper.imsdk.constant.Platform
  * @Email: Finger@spianmo.com
  * @Date: 2023/10/23
  */
-class Protocol<T>(
+class ProtocolWrapper<T>(
     type: Int,
     from: String,
     platform: Platform,

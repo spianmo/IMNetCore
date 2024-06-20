@@ -7,7 +7,7 @@ import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.data.LoginResultDataContent
 import com.teamhelper.imsdk.event.BusinessEventListener
 import com.teamhelper.imsdk.handler.ProtocolHandler
-import com.teamhelper.imsdk.protocol.Protocol
+import com.teamhelper.imsdk.protocol.ProtocolWrapper
 import java.lang.reflect.Type
 
 /**
@@ -22,7 +22,7 @@ class LoginResponseProtocolHandler : ProtocolHandler<LoginResultDataContent> {
      *
      * @param p 消息体
      */
-    override fun handle(p: Protocol<LoginResultDataContent>) {
+    override fun handle(p: ProtocolWrapper<LoginResultDataContent>) {
         EventRegistry.post(BusinessEventType.onUserLogin, p)
         BusinessEventRegistry.executeEventHandler { businessEventListener: BusinessEventListener ->
             businessEventListener.onUserLogin(
@@ -32,6 +32,6 @@ class LoginResponseProtocolHandler : ProtocolHandler<LoginResultDataContent> {
     }
 
     override fun getGenericType(): Type {
-        return object : TypeToken<Protocol<LoginResultDataContent>>() {}.type
+        return object : TypeToken<ProtocolWrapper<LoginResultDataContent>>() {}.type
     }
 }

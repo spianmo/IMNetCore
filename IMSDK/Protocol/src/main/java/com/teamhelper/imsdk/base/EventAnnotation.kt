@@ -15,7 +15,7 @@ annotation class ServerEvent(val event: ServerEventType)
 
 
 enum class BusinessEventType {
-    onUserLogin, onUserKickOut, onCommonDataReceived, onHeartbeat, onErrorReceived, onAckReceived
+    onUserLogin, onUserKickOut, onEchoReceived, onHeartbeat, onErrorReceived, onTokenExpired, onTokenRefresh, onCommonDataReceived
 }
 
 enum class ServerEventType {

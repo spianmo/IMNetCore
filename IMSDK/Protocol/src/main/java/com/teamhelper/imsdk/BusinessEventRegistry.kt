@@ -2,12 +2,13 @@ package com.teamhelper.imsdk
 
 import com.teamhelper.imsdk.event.BusinessEventListener
 import com.teamhelper.imsdk.handler.ProtocolHandler
-import com.teamhelper.imsdk.handler.impl.AckProtocolHandler
-import com.teamhelper.imsdk.handler.impl.CommonProtocolHandler
+import com.teamhelper.imsdk.handler.impl.EchoProtocolHandler
 import com.teamhelper.imsdk.handler.impl.ErrorProtocolHandler
 import com.teamhelper.imsdk.handler.impl.HeartbeatProtocolHandler
 import com.teamhelper.imsdk.handler.impl.KickOutProtocolHandler
 import com.teamhelper.imsdk.handler.impl.LoginResponseProtocolHandler
+import com.teamhelper.imsdk.handler.impl.RefreshTokenProtocolHandler
+import com.teamhelper.imsdk.handler.impl.TokenExpiredProtocolHandler
 import com.teamhelper.imsdk.protocol.ProtocolType
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Consumer
@@ -17,12 +18,13 @@ object BusinessEventRegistry {
     private val handlers: MutableMap<Int, ProtocolHandler<*>> = ConcurrentHashMap()
 
     init {
-        handlers[ProtocolType.S.LOGIN_RESPONSE] = LoginResponseProtocolHandler()
-        handlers[ProtocolType.S.HEARTBEAT] = HeartbeatProtocolHandler()
-        handlers[ProtocolType.S.COMMON_DATA] = CommonProtocolHandler()
-        handlers[ProtocolType.S.ACK] = AckProtocolHandler()
-        handlers[ProtocolType.S.KICK_OUT] = KickOutProtocolHandler()
-        handlers[ProtocolType.S.ERROR] = ErrorProtocolHandler()
+        handlers[ProtocolType.S.`FROM_SERVER_TYPE_OF_RESPONSE$LOGIN`] = LoginResponseProtocolHandler()
+        handlers[ProtocolType.S.`FROM_SERVER_TYPE_OF_RESPONSE$KEEP$ALIVE`] = HeartbeatProtocolHandler()
+        handlers[ProtocolType.S.TOKEN_IS_ABOUT_TO_EXPIRE] = TokenExpiredProtocolHandler()
+        handlers[ProtocolType.S.`FROM_SERVER_TYPE_OF_RESPONSE$REFRESH_TOKEN`] = RefreshTokenProtocolHandler()
+        handlers[ProtocolType.S.`FROM_SERVER_TYPE_OF_RESPONSE$ECHO`] = EchoProtocolHandler()
+        handlers[ProtocolType.S.FROM_SERVER_TYPE_OF_KICKOUT] = KickOutProtocolHandler()
+        handlers[ProtocolType.S.`FROM_SERVER_TYPE_OF_RESPONSE$FOR$ERROR`] = ErrorProtocolHandler()
     }
 
     /**

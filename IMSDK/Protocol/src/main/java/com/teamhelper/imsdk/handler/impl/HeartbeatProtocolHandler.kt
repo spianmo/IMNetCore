@@ -6,7 +6,7 @@ import com.teamhelper.imsdk.base.BusinessEventType
 import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.event.BusinessEventListener
 import com.teamhelper.imsdk.handler.ProtocolHandler
-import com.teamhelper.imsdk.protocol.Protocol
+import com.teamhelper.imsdk.protocol.ProtocolWrapper
 import java.lang.reflect.Type
 
 /**
@@ -21,7 +21,7 @@ class HeartbeatProtocolHandler : ProtocolHandler<String> {
      *
      * @param p 消息体
      */
-    override fun handle(p: Protocol<String>) {
+    override fun handle(p: ProtocolWrapper<String>) {
         EventRegistry.post(BusinessEventType.onHeartbeat, p)
         BusinessEventRegistry.executeEventHandler { businessEventListener: BusinessEventListener ->
             businessEventListener.onHeartbeat(
@@ -31,6 +31,6 @@ class HeartbeatProtocolHandler : ProtocolHandler<String> {
     }
 
     override fun getGenericType(): Type {
-        return object : TypeToken<Protocol<String>>() {}.type
+        return object : TypeToken<ProtocolWrapper<String>>() {}.type
     }
 }

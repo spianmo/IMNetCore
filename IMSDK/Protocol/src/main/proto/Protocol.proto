@@ -1,0 +1,25 @@
+syntax = "proto3";
+option java_package = "cn.teamhelper.signal.protocol";
+option java_outer_classname = "ProtocolProto";
+
+message Protocol {
+  int32 type = 1;
+  string from = 2;
+  Platform platform = 3;
+  string to = 4;
+  Platform toPlatform = 5;
+  string fp = 6;
+  bool qos = 7;
+  int32 retryCount = 8;
+  string dataContent = 9;
+  int32 typeu = 10;
+}
+
+// 客户端平台
+enum Platform {
+  SERVER = 0;
+  IOS = 1;
+  ANDROID = 2;
+  PC = 3;
+  Glass = 4;
+}

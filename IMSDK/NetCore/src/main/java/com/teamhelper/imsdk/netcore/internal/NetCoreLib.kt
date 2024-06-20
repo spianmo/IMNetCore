@@ -8,7 +8,8 @@ import com.teamhelper.imsdk.base.EventRegistry
 import com.teamhelper.imsdk.base.ServerEventType
 import com.teamhelper.imsdk.handler.ProtocolHandler
 import com.teamhelper.imsdk.netcore.ServerEventRegistry
-import com.teamhelper.imsdk.protocol.Protocol
+import com.teamhelper.imsdk.protocol.ProtocolFactory
+import com.teamhelper.imsdk.protocol.ProtocolWrapper
 
 @Keep
 internal class NetCoreLib {
@@ -57,22 +58,6 @@ internal class NetCoreLib {
                 it.onTextMessageRecv(message)
             }
             logD("onTextMessageRecv: $message")
-
-            val anyProtocol = Gson().fromJson(message, Protocol::class.java)
-            if (anyProtocol.type == null) {
-                logD("onTextMessageRecv: Irregular protocol format, type == null")
-                return
-            }
-            val protocolHandler: ProtocolHandler<Any>? =
-                BusinessEventRegistry.getProtocolHandler(anyProtocol.type!!) as ProtocolHandler<Any>?
-
-            if (protocolHandler == null) {
-                logD("onTextMessageRecv: unknown protocol")
-                return
-            }
-
-            val fromJson = Gson().fromJson<Protocol<*>>(message, protocolHandler.getGenericType())
-            protocolHandler.handle(fromJson as Protocol<Any>)
         }
 
         /**
@@ -87,6 +72,23 @@ internal class NetCoreLib {
                 it.onBinaryMessageRecv(binary)
             }
             logD("onBinaryMessageRecv: ${binary.size}")
+
+            val protobuf = ProtocolFactory.convertBytesToProtobuf(binary)
+            if (protobuf == null) {
+                logD("onTextMessageRecv: Irregular protocol format, type == null")
+                return
+            }
+            val dataContent = protobuf.dataContent
+            val protocolHandler: ProtocolHandler<Any>? =
+                BusinessEventRegistry.getProtocolHandler(protobuf.type) as ProtocolHandler<Any>?
+
+            if (protocolHandler == null) {
+                logD("onTextMessageRecv: unknown protocol")
+                return
+            }
+
+            val fromJson = Gson().fromJson<ProtocolWrapper<*>>(dataContent, protocolHandler.getGenericType())
+            protocolHandler.handle(fromJson as ProtocolWrapper<Any>)
         }
 
         /**

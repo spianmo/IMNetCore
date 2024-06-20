@@ -1,6 +1,6 @@
 package com.teamhelper.imsdk.handler
 
-import com.teamhelper.imsdk.protocol.Protocol
+import com.teamhelper.imsdk.protocol.ProtocolWrapper
 import java.lang.reflect.Type
 
 
@@ -15,7 +15,7 @@ interface ProtocolHandler<T> {
      *
      * @param p 消息体
      */
-    fun handle(p: Protocol<T>)
+    fun handle(p: ProtocolWrapper<T>)
 
     /**
      * 默认方法, 获取实现类的泛型对象的类对象

@@ -1,23 +1,16 @@
 package com.teamhelper.imsdk
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.teamhelper.imsdk.base.BusinessEvent
-import com.teamhelper.imsdk.base.BusinessEventType
+import cn.teamhelper.signal.protocol.ProtocolProto
+import cn.teamhelper.signal.protocol.ProtocolProto.Protocol
 import com.teamhelper.imsdk.base.EventSubscriber
 import com.teamhelper.imsdk.base.ServerEvent
 import com.teamhelper.imsdk.base.ServerEventType
-import com.teamhelper.imsdk.data.AckDataContent
-import com.teamhelper.imsdk.data.CommonDataContent
-import com.teamhelper.imsdk.data.ErrorDataContent
-import com.teamhelper.imsdk.data.KickOutDataContent
-import com.teamhelper.imsdk.data.LoginResultDataContent
 import com.teamhelper.imsdk.databinding.ActivityMainBinding
 import com.teamhelper.imsdk.netcore.NetCore
-import com.teamhelper.imsdk.protocol.Protocol
+import com.teamhelper.imsdk.protocol.ProtocolType
 
 @EventSubscriber
 class MainActivity : AppCompatActivity() {
@@ -26,57 +19,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.toolbar)
-
-        val testSubscriber = TestSubscriber()
-
         binding.fab.setOnClickListener {
-            NetCore.instance.connect()
-            Handler(mainLooper).postDelayed({
-                NetCore.instance.sendTextMessage("Hello World")
-                testSubscriber.release()
-            }, 10000)
-            startActivity(Intent(this, SecondActivity::class.java))
+            NetCore.instance.connect(wsUrl = "ws://192.168.3.55:9904")
+            NetCore.instance.sendBinaryMessage(Protocol.newBuilder().apply {
+                type = ProtocolType.C.FROM_CLIENT_TYPE_OF_LOGIN
+                platform = ProtocolProto.Platform.ANDROID
+            }.build().toByteArray())
         }
-    }
-
-    @BusinessEvent(BusinessEventType.onUserLogin)
-    fun onUserLogin(p: Protocol<LoginResultDataContent>) {
-        Log.e("MainActivity", "onUserLoginEvent")
-    }
-
-    @BusinessEvent(BusinessEventType.onUserKickOut)
-    fun onUserKickOut(p: Protocol<KickOutDataContent>) {
-        Log.e("MainActivity", "onUserKickOutEvent" + p.dataContent?.reason)
-    }
-
-    @BusinessEvent(BusinessEventType.onCommonDataReceived)
-    fun onCommonDataReceived(p: ByteArray) {
-        Log.e("MainActivity", "onCommonDataReceived")
-    }
-
-    @BusinessEvent(BusinessEventType.onCommonDataReceived)
-    fun <T> onCommonDataReceived(p: Protocol<CommonDataContent<T>>) {
-        Log.e("MainActivity", "onCommonDataReceived")
-    }
-
-    @BusinessEvent(BusinessEventType.onHeartbeat)
-    fun onHeartbeat(p: Protocol<String>) {
-        Log.e("MainActivity", "onHeartbeat")
-    }
-
-    @BusinessEvent(BusinessEventType.onErrorReceived)
-    fun onErrorReceived(p: Protocol<ErrorDataContent>) {
-        Log.e("MainActivity", "onErrorReceived")
-    }
-
-    @BusinessEvent(BusinessEventType.onAckReceived)
-    fun onAckReceived(p: Protocol<AckDataContent>) {
-        Log.e("MainActivity", "onAckReceived")
     }
 
     @ServerEvent(ServerEventType.onConnectOpen)
