@@ -29,12 +29,4 @@ jclass findClass(const char *name) {
                                                           getEnv()->NewStringUTF(name)));
 }
 
-#define LOG_TAG  "WebSocketClient JNI"
-#define DEBUG_FLAG false
-#define LOGD(...) DEBUG_FLAG && __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG ,__VA_ARGS__)
-#define LOGI(...) DEBUG_FLAG && __android_log_print(ANDROID_LOG_INFO,LOG_TAG ,__VA_ARGS__)
-#define LOGW(...) DEBUG_FLAG && __android_log_print(ANDROID_LOG_WARN,LOG_TAG ,__VA_ARGS__)
-#define LOGE(...) DEBUG_FLAG && __android_log_print(ANDROID_LOG_ERROR,LOG_TAG ,__VA_ARGS__)
-#define LOGF(...) DEBUG_FLAG && __android_log_print(ANDROID_LOG_FATAL,LOG_TAG ,__VA_ARGS__)
-
 #endif //IMSDKPROJECT_UTIL_H

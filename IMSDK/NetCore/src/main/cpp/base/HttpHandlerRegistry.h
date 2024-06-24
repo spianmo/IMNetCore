@@ -132,12 +132,4 @@ static Startup global;
 #define FMT std
 #endif
 
-#define LOGE(...)                        \
-  do {                                               \
-    fprintf(stderr, "%s:%s:%d ", __FILE__, __func__, \
-            static_cast<int>(__LINE__));             \
-    fprintf(stderr, ##__VA_ARGS__);                  \
-    fprintf(stderr, "\n");                           \
-  } while (0)
-
 #endif //TRACKERSERVER_HTTPHANDLERREGISTRY_H

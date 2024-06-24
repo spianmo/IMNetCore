@@ -20,6 +20,7 @@ include(cmake/libfmt.cmake)
 add_library(netcore SHARED
         netcore.cpp
         IMWebSocketClient.h
+        IMTcpSocketClient.h
         base/HttpHandlerRegistry.h
         base/HttpHandlerRegistry.cpp
         base/WebSocketHandler.cpp

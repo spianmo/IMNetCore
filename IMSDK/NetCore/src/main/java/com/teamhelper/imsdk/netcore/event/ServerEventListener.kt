@@ -1,5 +1,7 @@
 package com.teamhelper.imsdk.netcore.event
 
+import com.teamhelper.imsdk.netcore.NetCore
+
 /**
  * @Description: 信道监听器
  * @Author: Finger
@@ -11,27 +13,27 @@ interface ServerEventListener {
      * 连接打开回调
      * @param response: String
      */
-    fun onConnectOpen(response: String)
+    fun onConnectOpen(client: NetCore, response: String)
 
     /**
      * opCode Text消息接收回调
      * @param message: String
      */
 
-    fun onTextMessageRecv(message: String)
+    fun onTextMessageRecv(client: NetCore, message: String)
 
     /**
      * opCode Binary消息接收回调
      * @param binary: ByteArray
      */
 
-    fun onBinaryMessageRecv(binary: ByteArray)
+    fun onBinaryMessageRecv(client: NetCore, binary: ByteArray)
 
     /**
      * 连接关闭回调
      */
 
-    fun onConnectClosed()
+    fun onConnectClosed(client: NetCore, code: Int, reason: String)
 
     /**
      * 重连回调
@@ -40,6 +42,6 @@ interface ServerEventListener {
      * @param delay: Int 重连延迟时间 单位ms
      */
 
-    fun onReconnect(retryCnt: Int, delay: Int)
+    fun onReconnect(client: NetCore, retryCnt: Int, delay: Int)
 
 }
