@@ -88,6 +88,20 @@ public:
             jint write_timeout = env->GetStaticIntField(clazz, fieldID);
             channel->setWriteTimeout(write_timeout);
         };
+        onWriteComplete = [this](const hv::SocketChannelPtr &channel, hv::Buffer *buf) {
+            JNIEnv *env = getEnv();
+            jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCore");
+            jmethodID methodID = env->GetMethodID(clazz, "onWriteComplete",
+                                                  "([B)V");
+            const char *data = (const char *) buf->data();
+            size_t size = buf->size();
+            jbyteArray byteArray = env->NewByteArray(size);
+            env->SetByteArrayRegion(byteArray, 0, size, (jbyte *) data);
+            env->CallVoidMethod(pJobject, methodID, byteArray);
+            env->DeleteLocalRef(byteArray);
+            hloge("onWriteComplete(type=%s len=%d): %.*s\n", "binary",
+                  (int) size, (int) size, data);
+        };
         onReconnect = [this](uint32_t cur_retry_cnt, uint32_t cur_delay) {
             JNIEnv *env = getEnv();
             jclass clazz = findClass("com/teamhelper/imsdk/netcore/NetCore");

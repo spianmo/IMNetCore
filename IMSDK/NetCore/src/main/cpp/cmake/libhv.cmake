@@ -1,5 +1,5 @@
 option(WITH_OPENSSL "with openssl library" ON)
-option(WITH_KCP "compile event/kcp" OFF)
+option(WITH_KCP "compile event/kcp" ON)
 
 
 # libhv

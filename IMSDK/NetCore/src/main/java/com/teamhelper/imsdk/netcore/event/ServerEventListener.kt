@@ -36,6 +36,11 @@ interface ServerEventListener {
     fun onConnectClosed(client: NetCore, code: Int, reason: String)
 
     /**
+     *
+     */
+    fun onWriteComplete(client: NetCore, binary: ByteArray)
+
+    /**
      * 重连回调
      * @calledByC++
      * @param retryCnt: Int 重连次数 从1开始

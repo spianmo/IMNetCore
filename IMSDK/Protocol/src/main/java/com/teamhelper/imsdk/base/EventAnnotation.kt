@@ -19,5 +19,5 @@ enum class BusinessEventType {
 }
 
 enum class ServerEventType {
-    onConnectOpen, onTextMessageRecv, onBinaryMessageRecv, onConnectClosed, onReconnect
+    onConnectOpen, onTextMessageRecv, onBinaryMessageRecv, onConnectClosed, onReconnect, onWriteComplete
 }

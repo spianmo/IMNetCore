@@ -110,6 +110,13 @@ class MainActivity : AppCompatActivity(), ServerEventListener {
         Log.e("MainActivity", "onConnectClosed: $code $reason")
     }
 
+    /**
+     *
+     */
+    override fun onWriteComplete(client: NetCore, binary: ByteArray) {
+        Log.e("MainActivity", "onWriteComplete")
+    }
+
     @ServerEvent(ServerEventType.onReconnect)
     override fun onReconnect(client: NetCore, retryCnt: Int, delay: Int) {
         Log.e("MainActivity", "onReconnect")

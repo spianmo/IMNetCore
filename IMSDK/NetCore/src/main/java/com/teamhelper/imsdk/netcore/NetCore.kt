@@ -24,6 +24,10 @@ open class NetCore {
     private external fun nativeIsConnected(fd: Int): Boolean
     private external fun nativeIsReconnect(fd: Int): Boolean
 
+    /**
+     * connect
+     * @When Websocket
+     */
     fun connect(wsUrl: String) {
         if (fd <= 0) {
             fd = nativeConnectWs(wsUrl)
@@ -33,6 +37,10 @@ open class NetCore {
         }
     }
 
+    /**
+     * connect
+     * @When TCP,Websocket,Udp
+     */
     fun connect(socketProtocol: SocketProtocol, host: String, port: Int, tls: Boolean) {
         if (fd <= 0) {
             fd = nativeConnect(socketProtocol.value, host, port, tls)
@@ -47,6 +55,10 @@ open class NetCore {
         }
     }
 
+    /**
+     * close
+     * @When TCP,Websocket,Udp
+     */
     fun close() {
         if (fd > 0) {
             nativeClose(fd)
@@ -57,6 +69,10 @@ open class NetCore {
         }
     }
 
+    /**
+     * sendTextMessage
+     * @When Websocket
+     */
     fun sendTextMessage(req: String) {
         if (fd > 0) {
             nativeSendTextMessage(fd, req)
@@ -65,6 +81,10 @@ open class NetCore {
         }
     }
 
+    /**
+     * sendBinaryMessage
+     * @When TCP,Websocket,Udp
+     */
     fun sendBinaryMessage(req: ByteArray) {
         if (fd > 0) {
             nativeSendBinaryMessage(fd, req)
@@ -73,6 +93,10 @@ open class NetCore {
         }
     }
 
+    /**
+     * isConnected
+     * @When TCP,Websocket
+     */
     fun isConnected(): Boolean {
         return if (fd > 0) {
             nativeIsConnected(fd)
@@ -82,6 +106,10 @@ open class NetCore {
         }
     }
 
+    /**
+     * isReconnect
+     * @When TCP,Websocket
+     */
     fun isReconnect(): Boolean {
         return if (fd > 0) {
             nativeIsReconnect(fd)
@@ -94,6 +122,7 @@ open class NetCore {
     /**
      * 连接打开回调
      * @calledByC++
+     * @When TCP,Websocket
      * @param response: String
      */
     private fun onConnectOpen(response: String) {
@@ -107,6 +136,7 @@ open class NetCore {
     /**
      * opCode Text消息接收回调
      * @calledByC++
+     * @When Websocket
      * @param message: String
      */
     private fun onTextMessageRecv(message: String) {
@@ -120,6 +150,7 @@ open class NetCore {
     /**
      * opCode Binary消息接收回调
      * @calledByC++
+     * @When TCP,Websocket,Udp
      * @param binary: ByteArray
      */
     private fun onBinaryMessageRecv(binary: ByteArray) {
@@ -148,8 +179,22 @@ open class NetCore {
     }
 
     /**
+     * 写入完成回调
+     * @calledByC++
+     * @When TCP,Websocket,Udp
+     */
+    private fun onWriteComplete(binary: ByteArray) {
+        EventRegistry.post(ServerEventType.onWriteComplete, this)
+        ServerEventRegistry.executeEventHandler {
+            it.onWriteComplete(this, binary)
+        }
+        logD("onWriteComplete")
+    }
+
+    /**
      * 连接关闭回调
      * @calledByC++
+     * @When TCP,Websocket
      */
     private fun onConnectClosed(code: Int, reason: String) {
         EventRegistry.post(ServerEventType.onConnectClosed, this, code, reason)
@@ -162,6 +207,7 @@ open class NetCore {
     /**
      * 重连回调
      * @calledByC++
+     * @When TCP,Websocket
      * @param retryCnt: Int 重连次数 从1开始
      * @param delay: Int 重连延迟时间 单位ms
      */

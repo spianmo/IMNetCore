@@ -4,6 +4,7 @@
 #include "base/WebSocketHandler.h"
 #include "IMWebSocketClient.h"
 #include "IMTcpSocketClient.h"
+#include "IMUdpSocketClient.h"
 #include <iostream>
 
 std::map<int, void *> clientMap;
@@ -40,10 +41,15 @@ Java_com_teamhelper_imsdk_netcore_NetCore_nativeConnect(JNIEnv *env, jobject thi
         int fd = clientPtr->connect(thiz, url.c_str());
         clientMap.insert(std::pair<int, IMWebSocketClient *>(fd, clientPtr));
         return fd;
-    } else {
+    } else if (socket_protocol == 1) {
         auto clientPtr = new IMTcpSocketClient();
         int fd = clientPtr->connect(thiz, _host, port, tls);
         clientMap.insert(std::pair<int, IMTcpSocketClient *>(fd, clientPtr));
+        return fd;
+    } else if (socket_protocol == 2) {
+        auto clientPtr = new IMUdpSocketClient();
+        int fd = clientPtr->connect(thiz, _host, port);
+        clientMap.insert(std::pair<int, IMUdpSocketClient *>(fd, clientPtr));
         return fd;
     }
     env->ReleaseStringUTFChars(host, _host);
@@ -93,6 +99,11 @@ Java_com_teamhelper_imsdk_netcore_NetCore_nativeSendBinaryMessage(JNIEnv *env, j
         if (clientPtr->channel->isWriteComplete()) {
             clientPtr->channel->write(data, len);
         }
+    } else if (socketProtocol == 2) {
+        auto clientPtr = (IMUdpSocketClient *) clientMap[fd];
+        if (clientPtr->channel->isWriteComplete()) {
+            clientPtr->sendto(data, len);
+        }
     }
 
     env->ReleaseByteArrayElements(req, data, 0);
@@ -126,6 +137,9 @@ Java_com_teamhelper_imsdk_netcore_NetCore_nativeSendTextMessage(JNIEnv *env, job
             return;
         }
         clientPtr->send(data);
+    } else if (socketProtocol == 2) {
+        auto clientPtr = (IMUdpSocketClient *) clientMap[fd];
+        clientPtr->sendto(data);
     }
 
     env->ReleaseStringUTFChars(req, data);
@@ -147,6 +161,9 @@ Java_com_teamhelper_imsdk_netcore_NetCore_nativeClose(JNIEnv *env, jobject thiz,
         clientPtr->close();
     } else if (socketProtocol == 1) {
         auto clientPtr = (IMTcpSocketClient *) clientMap[fd];
+        clientPtr->closesocket();
+    } else if (socketProtocol == 2) {
+        auto clientPtr = (IMUdpSocketClient *) clientMap[fd];
         clientPtr->closesocket();
     }
 
@@ -215,6 +232,9 @@ Java_com_teamhelper_imsdk_netcore_NetCore_nativeStop(JNIEnv *env, jobject thiz, 
     } else if (socketProtocol == 1) {
         auto clientPtr = (IMTcpSocketClient *) clientMap[fd];
         clientPtr->stop();
+    } else if (socketProtocol == 2) {
+        auto clientPtr = (IMUdpSocketClient *) clientMap[fd];
+        clientPtr->stop();
     }
 
     clientMap[fd] = nullptr;
@@ -237,6 +257,9 @@ Java_com_teamhelper_imsdk_netcore_NetCore_nativeStart(JNIEnv *env, jobject thiz,
         clientPtr->start();
     } else if (socketProtocol == 1) {
         auto clientPtr = (IMTcpSocketClient *) clientMap[fd];
+        clientPtr->start();
+    } else if (socketProtocol == 2) {
+        auto clientPtr = (IMUdpSocketClient *) clientMap[fd];
         clientPtr->start();
     }
 
