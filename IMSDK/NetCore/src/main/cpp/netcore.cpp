@@ -262,7 +262,4 @@ Java_com_teamhelper_imsdk_netcore_NetCore_nativeStart(JNIEnv *env, jobject thiz,
         auto clientPtr = (IMUdpSocketClient *) clientMap[fd];
         clientPtr->start();
     }
-
-    clientMap[fd] = nullptr;
-    clientMap.erase(fd);
 }
